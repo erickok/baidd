@@ -1,0 +1,37 @@
+<?xml version="1.0" standalone="yes" ?>
+<baidd-agent>
+	<beliefbase>
+		<![CDATA[
+		haveFun <- goToRestaurant(mac).
+		~haveFun <- goToRestaurant(X), isExclusive(X).
+		drinkAlcohol <- goToRestaurant(X), servesWine(X).
+		spendLittle <- goToRestaurant(X), isCheap(X).
+		~spendLittle <- goToRestaurant(X), ~isCheap(X).
+		
+		~servesWine(mac).
+		isCheap(mac).
+		~isExclusive(mac).
+		~isExclusive(bistro).
+		isExclusive(blauw).
+		]]>
+	</beliefbase>
+	<options>
+		<option>goToRestaurant(mac).</option>
+		<option>goToRestaurant(bistro).</option>
+		<option>goToRestaurant(blauw).</option>
+	</options>
+	<hidden-goals>
+	</hidden-goals>
+	<public-goals>
+		<goal>haveFun. 20</goal>
+		<goal>spendLittle. 60</goal>
+	</public-goals>
+	<properties>
+		<property name="PlayRejects" type="boolean">FALSE</property>
+		<property name="OnlyWhyProposeIfCounterArgument" type="boolean">FALSE</property>
+		<property name="OnlyRejectIfCounterArgument" type="boolean">TRUE</property>
+		<property name="OnlyWhyRejectIfArgument" type="boolean">FALSE</property>
+		<property name="OnlyWhyIfCounterArgument" type="boolean">FALSE</property>
+		<property name="MinimumUtilityForBuild" type="integer">0</property>
+	</properties>
+</baidd-agent>

@@ -1,0 +1,2 @@
+path=$(dirname $(readlink -f $0))
+java -classpath $path/AspicInference/bin:$path/BaiddModel/bin:$path/BaiddPlatform/bin:$path/BaiddPlatform/lib/jopt-simple-3.1.jar:$path/BaiddPlatform/lib/collections-generic-4.01.jar:$path/BaiddPlatform/lib/colt-1.2.0.jar:$path/BaiddPlatform/lib/forms-1.2.1.jar:$path/BaiddPlatform/lib/jopt-simple-3.1.jar:$path/BaiddPlatform/lib/jung-algorithms-2.0.jar:$path/BaiddPlatform/lib/jung-api-2.0.jar:$path/BaiddPlatform/lib/jung-graph-impl-2.0.jar:$path/BaiddPlatform/lib/jung-visualization-2.0.jar nl.uu.cs.arg.platform.gui.DialogueViewer $*

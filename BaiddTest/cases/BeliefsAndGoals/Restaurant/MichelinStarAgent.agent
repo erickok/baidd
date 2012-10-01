@@ -1,0 +1,38 @@
+<?xml version="1.0" standalone="yes" ?>
+<baidd-agent>
+	<beliefbase>
+		<![CDATA[
+		haveFun <- goToRestaurant(blauw).
+		~haveFun <- goToRestaurant(X), isBusy(X).
+		drinkAlcohol <- goToRestaurant(X), servesWine(X).
+		~drinkAlcohol <- goToRestaurant(X), ~servesWine(X).
+		~loseWeight <- goToRestaurant(X), drinkAlcohol.
+		loseWeight <- goToRestaurant(X), servesFreshFood(X).
+		~loseWeight <- goToRestaurant(X), ~servesFreshFood(X).
+		spendLittle <- goToRestaurant(X), isCheap(X).
+		~spendLittle <- goToRestaurant(X), ~isCheap(X).
+		
+		servesWine(blauw).
+		~servesWine(mac).
+		isBusy(mac).
+		isCheap(mac).
+		~isCheap(blauw).
+		]]>
+	</beliefbase>
+	<options>
+		<option>goToRestaurant(mac).</option>
+		<option>goToRestaurant(blauw).</option>
+	</options>
+	<hidden-goals>
+		<goal>drinkAlcohol. 100</goal>
+	</hidden-goals>
+	<public-goals>
+	</public-goals>
+	<properties>
+		<property name="OnlyWhyProposeIfCounterArgument" type="boolean">FALSE</property>
+		<property name="OnlyRejectIfCounterArgument" type="boolean">TRUE</property>
+		<property name="OnlyWhyRejectIfArgument" type="boolean">FALSE</property>
+		<property name="OnlyWhyIfCounterArgument" type="boolean">TRUE</property>
+		<property name="MinimumUtilityForBuild" type="integer">0</property>
+	</properties>
+</baidd-agent>

@@ -1,0 +1,44 @@
+<body>
+Top level package for the ASPIC Argumentation Engine. This component can be embedded in other applications
+(e.g. the Decision Engine), used interactively via the provided
+Tester GUI, or used via the Command Line.
+<h1>Command line Usage</h1>
+If you run the Inference Engine at the commandline and specify
+org.aspic.inference.Engine then you will see this message:
+<pre>
+usage: java org.aspic.inference.Engine [-options] dKB query
+            dKB - defeasible Knowledge Base
+            Query - query expression.
+ -f,--format                   aifxml or dot. If ommitted then the engine
+                               just outputs a list of matched expressions followed by 'yes' or 'no'.
+ -h,--help                     Show this message
+ -l,--logging                  turns on logging to stderr.
+ -p,--pretty                   sets AIFXML pretty printing
+ -rr,--restricted_rebutting    sets restricted rebutting: off (default) or
+                               on.
+ -s,--semantics                controls semantics of reasoning.  grounded
+                               (default) or preferred_credulous are available.
+ -t,--transposition            sets knowledge base transposition: off
+                               (default) or on.
+ -v,--version                  print product version and exit
+ -vn,--valuation               sets argument valuation: weakest_link
+                               (default) or last_link.
+</pre>
+(or similar) which details usage of the CLI.
+<h1>GUI</h1>
+The Experimental GUI class is org.aspic.inference.gui.EngineTester
+<h1>Status</h1>
+Beta.  Feature complete (all anticipated engine configurations are implemented).  API subject to change.  Bugs are still being ironed out (see README).
+<h2>Dependencies</h2>
+Several third party libraries are used by the engine.  These are listed below.
+<UL>
+<li><a href="http://junit.sourceforge.net/junit3.8.1/index.html">JUnit 3.8.1</a> - test coverage is pretty good.  Where there isnt an obvious unit test, there will be an integration test covered in Acceptance.java.</li>
+<li><a href="http://xmlunit.sourceforge.net/">XMLUnit 1.0</a> - used in TestEngine.</li>
+<li><a href="http://www.jdom.org/">JDom 1.0</a> - used in writers.AIFXMLWriter and in Acceptance.java for reading an xml list of test cases.</li> 
+<li><a href="http://jaxen.org/">Jaxen 1.1 beta 10</a> - used in Acceptance.java for reading an xml list of test cases.</li> 
+<li><a href="http://jakarta.apache.org/commons/cli/">Jakarta Commons CLI 1.0</a> - used in Engine for constructing the CLI.</li>
+<li><a href="https://javacc.dev.java.net/">JavaCC v4.0</a> - used in parser package to define and build PrologSyntax.java.</li>
+<li><a href="http://jung.sourceforge.net/">Jung v1.7.6</a> - used in writers and gui packages to build and layout swing graphs.</li>
+<li><a href="http://dsd.lbl.gov/~hoschek/colt/">Colt 1.2.0</a> - required for jung graph.</li>
+<li><a href="http://jakarta.apache.org/commons/collections/">Jakarta Commons Collections 3.2</a> - required for jung graph.</li>
+</body>

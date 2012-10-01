@@ -1,0 +1,11 @@
+<?xml version="1.0" standalone="yes" ?>
+<baidd-agent>
+	<beliefbase>
+		<![CDATA[
+		]]>
+	</beliefbase>
+	<hidden-goals>
+	</hidden-goals>
+	<public-goals>
+	</public-goals>
+</baidd-agent>

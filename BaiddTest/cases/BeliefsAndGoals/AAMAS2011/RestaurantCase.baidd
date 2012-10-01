@@ -1,0 +1,18 @@
+<?xml version="1.0" standalone="yes" ?>
+<baidd-mas>
+	<topic goal="enjoy">goTo(T)</topic>
+	<protocol outcome-rule="RandomInProposal">
+		<deliberation-rules>
+			<rule>AttackOnOwnMove</rule>
+			<rule>NoRepeatInBranch</rule>
+		</deliberation-rules>
+		<termination-rules>
+			<rule>NoParticipants</rule>
+			<rule>InactiveRound</rule>
+		</termination-rules>
+	</protocol>
+	<agents>
+		<agent name="Pizza" type="BDIAgent" file="PizzaAgent.agent" />
+		<agent name="Italian" type="BDIAgent" file="ItalianAgent.agent" />
+	</agents>
+</baidd-mas>

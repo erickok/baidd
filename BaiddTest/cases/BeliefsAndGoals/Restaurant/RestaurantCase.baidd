@@ -1,0 +1,20 @@
+<?xml version="1.0" standalone="yes" ?>
+<baidd-mas>
+	<topic goal="haveFun">goToRestaurant(T)</topic>
+	<protocol>
+		<deliberation-rules>
+			<rule>AttackOnOwnMove</rule>
+			<rule>NoRepeatInBranch</rule>
+		</deliberation-rules>
+		<termination-rules>
+			<rule>NoParticipants</rule>
+			<rule>InactiveRound</rule>
+		</termination-rules>
+	</protocol>
+	<agents>
+		<agent name="MacAgent" type="BDIAgent" file="MacAgent.agent" />
+		<agent name="BistroAgent 1" type="BDIAgent" file="BistroAgent.agent" />
+		<agent name="BistroAgent 2" type="BDIAgent" file="BistroAgent.agent" />
+		<agent name="MichelinStarAgent" type="BDIAgent" file="MichelinStarAgent.agent" />
+	</agents>
+</baidd-mas>

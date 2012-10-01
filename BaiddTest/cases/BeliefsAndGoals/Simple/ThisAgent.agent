@@ -1,0 +1,31 @@
+<?xml version="1.0" standalone="yes" ?>
+<baidd-agent>
+	<beliefbase>
+		<![CDATA[
+		mutualGoal <- getRich.
+		~mutualGoal <- ~getRich.
+		getRich <- goDo(X), makesMoney(X).
+		~getRich <- goDo(X), ~makesMoney(X).
+		
+		makesMoney(this).
+		~makesMoney(that).
+		]]>
+	</beliefbase>
+	<options>
+		<option>goDo(this).</option>
+		<option>goDo(that).</option>
+	</options>
+	<hidden-goals>
+		<goal>getRich. 10</goal>
+	</hidden-goals>
+	<public-goals>
+		<goal>mutualGoal. 100</goal>
+	</public-goals>
+	<properties>
+		<property name="OnlyWhyProposeIfCounterArgument" type="boolean">FALSE</property>
+		<property name="OnlyRejectIfCounterArgument" type="boolean">TRUE</property>
+		<property name="OnlyWhyRejectIfArgument" type="boolean">FALSE</property>
+		<property name="OnlyWhyIfCounterArgument" type="boolean">TRUE</property>
+		<property name="MinimumUtilityForBuild" type="integer">0</property>
+	</properties>
+</baidd-agent>

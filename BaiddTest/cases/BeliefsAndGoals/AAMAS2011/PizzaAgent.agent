@@ -1,0 +1,28 @@
+<?xml version="1.0" standalone="yes" ?>
+<baidd-agent>
+	<beliefbase>
+		<![CDATA[
+		eatPizza <- goTo(pizzeria).
+		drinkWine <- goTo(italian).
+		enjoy <- eatPizza.
+		enjoy <- drinkWine.
+		]]>
+	</beliefbase>
+	<options>
+		<option>goTo(pizzeria).</option>
+	</options>
+	<hidden-goals>
+	</hidden-goals>
+	<public-goals>
+		<goal>eatPizza. 10</goal>
+		<goal>drinkWine. 5</goal>
+	</public-goals>
+	<properties>
+		<property name="PlayRejects" type="boolean">FALSE</property>
+		<property name="OnlyWhyProposeIfCounterArgument" type="boolean">FALSE</property>
+		<property name="OnlyRejectIfCounterArgument" type="boolean">TRUE</property>
+		<property name="OnlyWhyRejectIfArgument" type="boolean">FALSE</property>
+		<property name="OnlyWhyIfCounterArgument" type="boolean">TRUE</property>
+		<property name="MinimumUtilityForBuild" type="integer">0</property>
+	</properties>
+</baidd-agent>

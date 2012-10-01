@@ -1,0 +1,22 @@
+<?xml version="1.0" standalone="yes" ?>
+<baidd-agent>
+	<beliefbase>
+		<![CDATA[
+		~p <- q.
+		q.
+		]]>
+	</beliefbase>
+	<options>
+		<option>do(a).</option>
+	</options>
+	<hidden-goals>
+	</hidden-goals>
+	<public-goals>
+	</public-goals>
+	<properties>
+		<property name="AdoptBeliefs" type="boolean">FALSE</property>
+		<property name="AdoptOnlyDefensibleBeliefs" type="boolean">FALSE</property>
+		<property name="OnlyWhyProposeIfCounterArgument" type="boolean">FALSE</property>
+		<property name="OnlyWhyIfCounterArgument" type="boolean">TRUE</property>
+	</properties>
+</baidd-agent>

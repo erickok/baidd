@@ -1,0 +1,18 @@
+<?xml version="1.0" standalone="yes" ?>
+<baidd-mas>
+	<topic goal="g">empty(T)</topic>
+	<protocol>
+		<deliberation-rules>
+			<rule>AttackOnOwnMove</rule>
+		</deliberation-rules>
+		<termination-rules>
+			<rule>NoParticipants</rule>
+			<rule>InactiveRound</rule>
+		</termination-rules>
+	</protocol>
+	<agents>
+		<agent name="Inactive 1" type="InactiveAgent" file="Empty.agent" />
+		<agent name="Inactive 2" type="InactiveAgent" file="Empty.agent" />
+		<agent name="Inactive 3" type="InactiveAgent" file="Empty.agent" />
+	</agents>
+</baidd-mas>

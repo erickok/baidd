@@ -1,0 +1,28 @@
+<?xml version="1.0" standalone="yes" ?>
+<baidd-agent>
+	<beliefbase>
+		<![CDATA[
+		bigGoal <- do(a).
+		smallGoal <- do(b).
+		mutualGoal <- do(a), p.
+		mutualGoal <- do(b), p.
+		~p <- q.
+		q.
+		]]>
+	</beliefbase>
+	<options>
+		<option>do(a).</option>
+		<option>do(b).</option>
+	</options>
+	<hidden-goals>
+	</hidden-goals>
+	<public-goals>
+		<goal>bigGoal. 10</goal>
+		<goal>smallGoal. 5</goal>
+	</public-goals>
+	<properties>
+		<property name="AdoptBeliefs" type="boolean">FALSE</property>
+		<property name="AdoptOnlyDefensibleBeliefs" type="boolean">FALSE</property>
+		<property name="OnlyProposeIfArgument" type="boolean">FALSE</property>
+	</properties>
+</baidd-agent>
