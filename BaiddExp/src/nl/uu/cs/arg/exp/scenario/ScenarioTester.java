@@ -550,13 +550,31 @@ public class ScenarioTester {
 		KnowledgeBase kb = new KnowledgeBase();
 		kb.addRules(b);
 		try {
-			return helper.findProof(new ConstantList(goal), 0.0, kb, Arrays.asList(new Rule(option)));
+			List<RuleArgument> allproofs = helper.findProof(new ConstantList(goal), 0.0, kb, Arrays.asList(new Rule(option)));
+			List<RuleArgument> correctproofs = new ArrayList<RuleArgument>();
+			for (RuleArgument proof : allproofs) {
+				if (onBasisOfConstant(option, proof))
+					correctproofs.add(proof);
+			}
+			return correctproofs;
 		} catch (ParseException e) {
 			e.printStackTrace();
 		} catch (ReasonerException e) {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	private boolean onBasisOfConstant(Constant p, RuleArgument arg) {
+		if (arg.getClaim().isEqualModuloVariables(p)) {
+			return true;
+		}
+		for (RuleArgument sub : arg.getSubArgumentList().getArguments()) {
+			if (onBasisOfConstant(p, sub)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private String printArgAsChain(RuleArgument arg) {

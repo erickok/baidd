@@ -473,7 +473,7 @@ public class BDIAgent implements Agent, StrategyExposer {
 		for (Constant option : options) {
 			
 			// Determine which goals this option satisfies
-			List<Goal> satisfied = helper.evaluateGoalSatisfaction(option, allPersonalGoals(), this.beliefs);
+			Set<Goal> satisfied = helper.evaluateGoalSatisfaction(option, allPersonalGoals(), this.beliefs);
 			
 			// Sum the goal utilities to form the option utility 
 			int optionUtility = 0;

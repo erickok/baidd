@@ -1,9 +1,10 @@
 package nl.uu.cs.arg.platform.local;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import nl.uu.cs.arg.shared.dialogue.DialogueException;
 import nl.uu.cs.arg.shared.dialogue.Goal;
@@ -16,13 +17,13 @@ import nl.uu.cs.arg.shared.dialogue.locutions.WhyLocution;
 import org.aspic.inference.Constant;
 import org.aspic.inference.ConstantList;
 import org.aspic.inference.Engine;
+import org.aspic.inference.Engine.Property;
 import org.aspic.inference.KnowledgeBase;
 import org.aspic.inference.Query;
 import org.aspic.inference.Reasoner;
 import org.aspic.inference.ReasonerException;
 import org.aspic.inference.Rule;
 import org.aspic.inference.RuleArgument;
-import org.aspic.inference.Engine.Property;
 import org.aspic.inference.parser.ParseException;
 
 public class StrategyHelper {
@@ -96,20 +97,35 @@ public class StrategyHelper {
 	 * @param kb A reference to the knowledge base to query against
 	 * @return The list of goals that are satisfied 
 	 */
-	public List<Goal> evaluateGoalSatisfaction(Constant option, List<Goal> goals, KnowledgeBase kb) throws ParseException, ReasonerException {
+	public Set<Goal> evaluateGoalSatisfaction(Constant option, List<Goal> goals, KnowledgeBase kb) throws ParseException, ReasonerException {
 		
-		List<Goal> satisfiedGoals = new ArrayList<Goal>();
+		Set<Goal> satisfiedGoals = new HashSet<Goal>();
 		for (Goal goal : goals) {
 			
 			// A goal is satisfied by the option if we can form an argument for the 
 			// goal given the belief base added with the option (if g <- B \and q)
 			List<RuleArgument> proofs = findProof(new ConstantList(goal.getGoalContent()), 0.0, kb, Arrays.asList(new Rule(option)));
-			if (proofs.size() > 0) {
-				// This goal can be satisfied
-				satisfiedGoals.add(goal);
+			for (RuleArgument proof : proofs) {
+				// We require the option to be used in this argument
+				if (onBasisOfConstant(option, proof)) {
+					// This goal can be satisfied
+					satisfiedGoals.add(goal);
+				}
 			}
 		}
 		return satisfiedGoals;
+	}
+
+	private boolean onBasisOfConstant(Constant p, RuleArgument arg) {
+		if (arg.getClaim().isEqualModuloVariables(p)) {
+			return true;
+		}
+		for (RuleArgument sub : arg.getSubArgumentList().getArguments()) {
+			if (onBasisOfConstant(p, sub)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**

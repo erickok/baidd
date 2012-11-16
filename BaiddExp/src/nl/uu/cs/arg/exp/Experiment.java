@@ -159,6 +159,7 @@ public class Experiment implements DialogueMonitor {
 					scenario = gen.generate();
 				} catch (InvalidConfigurationException e) {
 					System.out.println("Run " + runId + " skipped! Invalid scenario configuration: " + e.getMessage());
+					runId--;
 					if (testWriter != null) {
 						testWriter.writeError(e.getMessage());
 					}
