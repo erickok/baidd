@@ -3,3 +3,9 @@ syntax: glob
 
 # Ignore patterns
 bin/
+BaiddTest/experiment1/
+BaiddTest/experiment2/
+BaiddTest/experiment3/
+BaiddTest/experiment4/
+BaiddTest/scenario/test1/
+BaiddTest/scenario/test2/

@@ -138,7 +138,7 @@ public class Experiment implements DialogueMonitor {
 						1,				// n_B_nro NO LONGER IN USE!
 						4, 				// n_G_nro
 						60, 			// n_B_ra
-						15,	 			// n_B_nra
+						10,	 			// n_B_nra
 						ScenarioGenerator.AssignmentMethod.Randomly, 
 						ScenarioGenerator.AssignmentMethod.Evenly,
 						ConflictMethod.Chained);

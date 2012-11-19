@@ -24,7 +24,7 @@ public class ScenarioExperiment {
 		ScenarioTestListener csvWriter = null;
 		try {
 			csvWriter = new ScenarioTestCsvWriter(
-					new File("/home/erickok/Dev/baidd1/BaiddTest/scenario/test/ScenarioExp.csv"),
+					new File("/home/erickok/Dev/baidd1/BaiddTest/scenario/test1/ScenarioExp.csv"),
 					false);
 	
 			// Perform the runs to test a certain scenario configuration
