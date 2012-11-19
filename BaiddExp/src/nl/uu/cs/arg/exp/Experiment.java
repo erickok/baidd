@@ -97,7 +97,7 @@ public class Experiment implements DialogueMonitor {
 
 		try {
 
-			final int players = 6;
+			final int players = 9;
 			String topic = "do";
 			String goal = "g_d";
 	        Term topicTerm = new Term(topic, new Variable("T"));
@@ -125,32 +125,20 @@ public class Experiment implements DialogueMonitor {
 				}
 
 				// Generate the scenario
-				int experimentOptionsCount = 7; // The number of options in the experiment - used to format the dialogue output only
+				int optionsCount = 34; // The number of options in the experiment - used to format the dialogue output only
 				ScenarioGenerator gen = new ScenarioGenerator(goal, 
-//						players,	// n_A 
-//						5, 			// n_R
-//						30, 		// n_B_s
-//						7,	 		// n_O_s
-//						13,	 		// n_G_s
-//						3, 			// n_O_r
-//						6, 			// n_G_r
-//						5,			// l
-//						8,			// n_B_nro
-//						2, 			// n_G_nro
-//						17, 		// n_B_ra
-//						8,	 		// n_B_nra
-						players,	// n_A 
-						5, 			// n_R
-						20, 		// n_B_s
-						experimentOptionsCount,	 		// n_O_s
-						9,	 		// n_G_s
-						2, 			// n_O_r
-						5, 			// n_G_r
-						2,			// l
-						12,			// n_B_nro
-						2, 			// n_G_nro
-						50, 		// n_B_ra
-						6,	 		// n_B_nra
+						players,		// n_A 
+						6, 				// n_R
+						30, 			// n_B_s
+						optionsCount,	// n_O_s
+						32,	 			// n_G_s
+						10,				// n_O_r
+						10,				// n_G_r
+						2,				// l
+						1,				// n_B_nro NO LONGER IN USE!
+						4, 				// n_G_nro
+						60, 			// n_B_ra
+						15,	 			// n_B_nra
 						ScenarioGenerator.AssignmentMethod.Randomly, 
 						ScenarioGenerator.AssignmentMethod.Evenly,
 						ConflictMethod.Chained);
@@ -225,7 +213,7 @@ public class Experiment implements DialogueMonitor {
 					// Note that this starting of the run is synchronous
 					// although the platform itself will actually run
 					// asynchronously
-					DialogueRun run = new DialogueRun(runId, configId, this, settings, experimentOptionsCount, agentStrategy.name(), dialogueOutputPrinter);
+					DialogueRun run = new DialogueRun(runId, configId, this, settings, optionsCount, agentStrategy.name(), dialogueOutputPrinter);
 					run.start(topicTerm, topicGoal, agents);
 
 					configId++;

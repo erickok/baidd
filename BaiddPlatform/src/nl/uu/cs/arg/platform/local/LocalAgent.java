@@ -20,10 +20,6 @@ public enum LocalAgent {
 	BDIAgent {
 		@Override public Agent createAgent() { return new BDIAgent(); }
 		@Override public Agent createAgent(AgentXmlData xmlDataFile) { return new BDIAgent(xmlDataFile); }	
-	},
-	NonArguingAgent {
-		@Override public Agent createAgent() { return new NonArguingAgent(); }
-		@Override public Agent createAgent(AgentXmlData xmlDataFile) { return new NonArguingAgent(xmlDataFile); }	
 	};
 	
 	public abstract Agent createAgent();

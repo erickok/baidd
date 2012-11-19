@@ -24,7 +24,7 @@ public class ScenarioExperiment {
 		ScenarioTestListener csvWriter = null;
 		try {
 			csvWriter = new ScenarioTestCsvWriter(
-					new File("/home/erickok/Dev/baidd/BaiddTest/scenario/test2/ScenarioExp.csv"),
+					new File("/home/erickok/Dev/baidd1/BaiddTest/scenario/test/ScenarioExp.csv"),
 					false);
 	
 			// Perform the runs to test a certain scenario configuration
@@ -44,34 +44,6 @@ public class ScenarioExperiment {
 						new int[] { 0,1,2,3,4,5,6,7,8,9,10 }, // n_G_nro
 						new int[] { 5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100 }, // n_B_ra
 						new int[] { 0,5,10,15,20,25,30,35,40,45,50 }, // n_B_nra
-
-						// Ranges
-						//new int[] { 1,2,3,4,5,6 }, // n_A 
-						//new int[] { 1,2,3,4,5,6 }, // n_R
-						//new int[] { 20,30,40,50,100 }, // n_B_s
-						//new int[] { 3,5,7,9,11,13,15 }, // n_O_s
-						//new int[] { 3,5,7,9,11,13,15 }, // n_G_s
-						//new int[] { 2,3,4,5,6 }, // n_O_r
-						//new int[] { 2,3,4,5,6 }, // n_G_r
-						//new int[] { 1,3,5,7,9 }, // l 
-						//new int[] { 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 }, // n_B_nro
-						//new int[] { 0,1,2 }, // n_G_nro
-						//new int[] { 1,3,5,7,9,11,13,15,17,19,21,23,25 }, // n_B_ra
-						//new int[] { 0,2,4,6,8,10 }, // n_B_nra
-						
-						// Defaults
-						//new int[] { 4 }, // n_A 
-						//new int[] { 2 }, // n_R
-						//new int[] { 30 }, // n_B_s
-						//new int[] { 5 }, // n_O_s
-						//new int[] { 5 }, // n_G_s
-						//new int[] { 3 }, // n_O_r
-						//new int[] { 3 }, // n_G_r
-						//new int[] { 5 }, // l
-						//new int[] { 3 }, // n_B_nro
-						//new int[] { 1 }, // n_G_nro
-						//new int[] { 15 }, // n_B_ra
-						//new int[] { 5 }, // n_B_nra
 						AssignmentMethod.Randomly, 
 						AssignmentMethod.Evenly, 
 						new ConflictMethod[] { ConflictMethod.Direct, ConflictMethod.Chained }, 

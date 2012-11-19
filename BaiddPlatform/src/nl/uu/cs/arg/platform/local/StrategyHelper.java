@@ -56,7 +56,7 @@ public class StrategyHelper {
 	 * @param needed The minimum required degree of belief (support)
 	 * @return A list of proofs found for the query; these may or may not be defeated 
 	 */
-	public List<RuleArgument> findProof(ConstantList query, Double needed, KnowledgeBase kb, List<Rule> addKnowledge) throws ParseException, ReasonerException {
+	public List<RuleArgument> findProof(ConstantList query, Double needed, KnowledgeBase kb, List<Rule> addKnowledge, Constant requiredPremise) throws ParseException, ReasonerException {
 		
 		//KnowledgeBase useKb = (KnowledgeBase) kb.clone(); // KnowledgeBase.clone() leaks memory!
 		KnowledgeBase useKb = kb;
@@ -72,8 +72,12 @@ public class StrategyHelper {
 		List<RuleArgument> proofs = new LinkedList<RuleArgument>();
 		for (RuleArgument proof: runQuery.getProof()) {
 			// Throw away trivial undercutter counter-arguments: these are not allowed by ASPIC but the implementation does return them
-			// This is hacked by seeing if the 
+			// This is hacked by seeing if the claim isn't a rule name (i.e. starting with 'r')
 			if (proof.getClaim().getFunctor().startsWith("r")) {
+				continue;
+			}
+			// If some constant is required to be present as premise in the argument, test if this is the case
+			if (requiredPremise != null && !onBasisOfConstant(requiredPremise, proof)) {
 				continue;
 			}
 			// Test the argument strength
@@ -103,14 +107,11 @@ public class StrategyHelper {
 		for (Goal goal : goals) {
 			
 			// A goal is satisfied by the option if we can form an argument for the 
-			// goal given the belief base added with the option (if g <- B \and q)
-			List<RuleArgument> proofs = findProof(new ConstantList(goal.getGoalContent()), 0.0, kb, Arrays.asList(new Rule(option)));
-			for (RuleArgument proof : proofs) {
-				// We require the option to be used in this argument
-				if (onBasisOfConstant(option, proof)) {
-					// This goal can be satisfied
-					satisfiedGoals.add(goal);
-				}
+			// goal given the belief base added with the option
+			// We require the option to be used as premise in this argument
+			List<RuleArgument> proofs = findProof(new ConstantList(goal.getGoalContent()), 0.0, kb, Arrays.asList(new Rule(option)), option);
+			if (proofs.size() > 0) {
+				satisfiedGoals.add(goal);
 			}
 		}
 		return satisfiedGoals;
@@ -144,7 +145,7 @@ public class StrategyHelper {
 		//if (argumentToAttack.isAtomic()) {
 			
 			// Find arguments for the negation of this claim
-			List<RuleArgument> proofs = findProof(new ConstantList(argumentToAttack.getClaim().negation()), argumentToAttack.getModifier(), kb, addKnowledge);
+			List<RuleArgument> proofs = findProof(new ConstantList(argumentToAttack.getClaim().negation()), argumentToAttack.getModifier(), kb, addKnowledge, null);
 			
 			// If an argument can be formed that was not yet moved, return this as the new underminer
 			RuleArgument newArgument = null;
@@ -205,6 +206,14 @@ public class StrategyHelper {
 		
 	}
 
+	public RuleArgument generateArgument(KnowledgeBase kb, Constant termToProve, double needed, Move<? extends Locution> moveToAttack, List<Move<? extends Locution>> existingReplies) throws ParseException, ReasonerException {
+		return generateArgument(kb, termToProve, needed, moveToAttack, existingReplies, null);
+	}
+	
+	public RuleArgument generateArgument(KnowledgeBase kb, Constant termToProve, double needed, Move<? extends Locution> moveToAttack, List<Move<? extends Locution>> existingReplies, List<Rule> addKnowledge) throws ParseException, ReasonerException {
+		return generateArgument(kb, termToProve, needed, moveToAttack, existingReplies, addKnowledge, null);
+	}
+	
 	/**
 	 * Tries to generate an argument for some term; this can be used to find support 
 	 * for why-propose and why moves. Alternatively this may be called with a 
@@ -215,12 +224,14 @@ public class StrategyHelper {
 	 * @param needed The minimum required degree of belief (support)
 	 * @param moveToAttack The move that we want to attack
 	 * @param existingReplies The existing replies to the argue move that we want to attack
+	 * @param addKnowledge Some beliefs to temporarily add to the knowledge base, just for this query
+	 * @param requiredPremise Optionally a premise that is mandatory to be used as premise in any found argument
 	 * @return An argument supporting the term we want to prove; or null if none could be formed
 	 */
-	public RuleArgument generateRebuttal(KnowledgeBase kb, Constant termToProve, double needed, Move<? extends Locution> moveToAttack, List<Move<? extends Locution>> existingReplies, List<Rule> addKnowledge) throws ParseException, ReasonerException {
+	public RuleArgument generateArgument(KnowledgeBase kb, Constant termToProve, double needed, Move<? extends Locution> moveToAttack, List<Move<? extends Locution>> existingReplies, List<Rule> addKnowledge, Constant requiredPremise) throws ParseException, ReasonerException {
 
 		// Try to find a single argument for the term that we are trying to prove
-		List<RuleArgument> proofs = findProof(new ConstantList(termToProve), needed, kb, addKnowledge);
+		List<RuleArgument> proofs = findProof(new ConstantList(termToProve), needed, kb, addKnowledge, requiredPremise);
 		for (RuleArgument proof : proofs) {
 
 			// Look if we didn't already move it earlier in the branch
@@ -262,7 +273,7 @@ public class StrategyHelper {
 	public RuleArgument generateCounterAttack(KnowledgeBase kb, RuleArgument argumentToAttack, Move<ArgueLocution> argueMoveToAttack, List<Move<? extends Locution>> existingReplies, List<Rule> addKnowledge) throws ParseException, ReasonerException {
 		
 		// Try to attack the move's conclusion (rebutting)
-		RuleArgument rebuttal = generateRebuttal(kb, argumentToAttack.getClaim().negation(), argumentToAttack.getModifier(), argueMoveToAttack, existingReplies, addKnowledge);
+		RuleArgument rebuttal = generateArgument(kb, argumentToAttack.getClaim().negation(), argumentToAttack.getModifier(), argueMoveToAttack, existingReplies, addKnowledge);
 		if (rebuttal != null) {
 			return rebuttal;
 		}

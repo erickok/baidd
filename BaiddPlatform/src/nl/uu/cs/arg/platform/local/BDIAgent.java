@@ -191,7 +191,7 @@ public class BDIAgent implements Agent, StrategyExposer {
 			
 			// 5: Move generation			
 			for (ValuedOption option : valuedOptions) {
-
+				
 				// See if it already exists in the dialogue as proposal
 				Proposal existingProposal = null;
 				for (Proposal proposed : this.dialogue.getProposals()) {
@@ -211,7 +211,7 @@ public class BDIAgent implements Agent, StrategyExposer {
 				
 				}
 				
-				// Already proposed...
+				// Already proposed?
 				boolean existingIsIn = existingProposal.isIn();
 				// Should be attack?
 				boolean playBuildOrDestroyStrategy = (Boolean)this.properties.get(Property.PlayBuildOrDestroyStrategy);
@@ -225,7 +225,7 @@ public class BDIAgent implements Agent, StrategyExposer {
 				// Exceptional case that we only play rejects (effectively not arguing!)
 				if ((Boolean)this.properties.get(Property.PlayOnlyRejects)) {
 
-/*					if (!(Boolean) this.properties.get(Property.PlayRejects)) {
+					/*if (!(Boolean) this.properties.get(Property.PlayRejects)) {
 						continue;
 					}*/
 					// Does it already have a reject reply?
@@ -243,39 +243,49 @@ public class BDIAgent implements Agent, StrategyExposer {
 				}
 				
 				// Find a place to attack/support this proposal
-				List<Move<? extends Locution>> attackers = existingProposal.getActiveAttackers();
-				
 				// TODO?: Sort list on 'easy' attacks first and 'hard' attacks later? Or randomize list?
-				for (Move<? extends Locution> attacker : attackers) {
+				List<Move<? extends Locution>> attackers = existingProposal.getActiveAttackers();
+				for (Move<? extends Locution> attackMove : attackers) {
+
+					// Some shortcuts to access often-used values
+					Locution attacker = attackMove.getLocution();
+					List<Move<? extends Locution>> replies = existingProposal.getReplies(attackMove);
+					Constant topicGoal = dialogue.getTopicGoal().getGoalContent();
+					List<Rule> optionAsKnowledge = Arrays.asList(new Rule(existingProposal.getProposalLocution().getConcreteProposal()));
+					Constant requireOptionPremise = existingProposal.getProposalLocution().getConcreteProposal();
 
 					// Try to generate a counter-argument first
 					RuleArgument newArgue = null;
-					if (attacker.getLocution() instanceof WhyProposeLocution) {
+					if (attacker instanceof WhyProposeLocution) {
 						// Find argument to support a goal given this proposal
-						newArgue = helper.generateRebuttal(this.beliefs, dialogue.getTopicGoal().getGoalContent(), 0.0, attacker, existingProposal.getReplies(attacker), Arrays.asList(new Rule(existingProposal.getProposalLocution().getConcreteProposal())));
-					} else if (attacker.getLocution() instanceof WhyRejectLocution) {
+						newArgue = helper.generateArgument(this.beliefs, topicGoal, 0.0, attackMove, replies, 
+								optionAsKnowledge, requireOptionPremise);
+					} else if (attacker instanceof WhyRejectLocution) {
 						// Find argument for the negation of a goal given this proposal
-						newArgue = helper.generateRebuttal(this.beliefs, dialogue.getTopicGoal().getGoalContent().negation(), 0.0, attacker, existingProposal.getReplies(attacker), Arrays.asList(new Rule(existingProposal.getProposalLocution().getConcreteProposal())));
-					} else if (attacker.getLocution() instanceof WhyLocution) {
+						newArgue = helper.generateArgument(this.beliefs, topicGoal.negation(), 0.0, attackMove, replies, 
+								optionAsKnowledge, requireOptionPremise);
+					} else if (attacker instanceof WhyLocution) {
 						// Find argument to support a premise that was questioned in a why move
-						newArgue = helper.generateRebuttal(this.beliefs, ((WhyLocution)attacker.getLocution()).getAttackedPremise(), 0.0, attacker, existingProposal.getReplies(attacker), null);
-					} else if (attacker.getLocution() instanceof ArgueLocution) {
-						newArgue = helper.generateCounterAttack(this.beliefs, ((ArgueLocution)attacker.getLocution()).getArgument(), (Move<ArgueLocution>) attacker, existingProposal.getReplies(attacker), Arrays.asList(new Rule(existingProposal.getProposalLocution().getConcreteProposal())));
+						newArgue = helper.generateArgument(this.beliefs, ((WhyLocution)attacker).getAttackedPremise(), 
+								0.0, attackMove, replies);
+					} else if (attacker instanceof ArgueLocution) {
+						newArgue = helper.generateCounterAttack(this.beliefs, ((ArgueLocution)attacker).getArgument(), 
+								(Move<ArgueLocution>) attackMove, replies, optionAsKnowledge);
 					}
 					// Found an argument? Then make the move
 					if (newArgue != null) {
-						moves.add(Move.buildMove(this.participant, attacker, new ArgueLocution(newArgue)));
+						moves.add(Move.buildMove(this.participant, attackMove, new ArgueLocution(newArgue)));
 						break;
 					}
 
 					// We don't have a counter-argument
 					// Try to question the move
-					if (attacker.getLocution() instanceof ProposeLocution && existingIsIn) {
+					if (attacker instanceof ProposeLocution && existingIsIn) {
 						
 						// A propose move may be questioned with why-propose or reject.
 						// Does it already have a why-propose or reject reply?
 						boolean hasWhy = false, hasReject = false;
-						for (Move<? extends Locution> reply : existingProposal.getReplies(attacker)) {
+						for (Move<? extends Locution> reply : replies) {
 							if (reply.getLocution() instanceof WhyProposeLocution) {
 								hasWhy = true;
 							} else if (reply.getLocution() instanceof RejectLocution) {
@@ -288,25 +298,27 @@ public class BDIAgent implements Agent, StrategyExposer {
 						if (!hasWhy) {
 							// No why-propose reply yet: check if we can (should) make this move
 							if (!((Boolean) this.properties.get(Property.OnlyWhyProposeIfCounterArgument)) ||
-									helper.generateRebuttal(this.beliefs, dialogue.getTopicGoal().getGoalContent(), 0.0, attacker, existingProposal.getReplies(attacker), Arrays.asList(new Rule(existingProposal.getProposalLocution().getConcreteProposal()))) != null) {
-								moves.add(Move.buildMove(this.participant, attacker, new WhyProposeLocution(existingProposal)));
+									helper.generateArgument(this.beliefs, dialogue.getTopicGoal().getGoalContent(), 0.0, 
+											attackMove, replies, optionAsKnowledge, requireOptionPremise) != null) {
+								moves.add(Move.buildMove(this.participant, attackMove, new WhyProposeLocution(existingProposal)));
 								break;
 							}
 						} else if (!hasReject && (Boolean) this.properties.get(Property.PlayRejects)) {
 							// No reject reply yet: check if we can (should) make this move
 							if (!((Boolean) this.properties.get(Property.OnlyRejectIfCounterArgument)) ||
-									helper.generateRebuttal(this.beliefs, dialogue.getTopicGoal().getGoalContent().negation(), 0.0, attacker, existingProposal.getReplies(attacker), Arrays.asList(new Rule(existingProposal.getProposalLocution().getConcreteProposal()))) != null) {
-								moves.add(Move.buildMove(this.participant, attacker, new RejectLocution(existingProposal)));
+									helper.generateArgument(this.beliefs, dialogue.getTopicGoal().getGoalContent().negation(), 0.0, 
+											attackMove, replies, optionAsKnowledge, requireOptionPremise) != null) {
+								moves.add(Move.buildMove(this.participant, attackMove, new RejectLocution(existingProposal)));
 								break;
 							}
 						}
 
-					} else if (attacker.getLocution() instanceof RejectLocution) {
+					} else if (attacker instanceof RejectLocution) {
 						
 						// A reject move may be questioned with a why-reject.
 						// Does it already have a why-reject reply?
 						boolean hasWhy = false;
-						for (Move<? extends Locution> reply : existingProposal.getReplies(attacker)) {
+						for (Move<? extends Locution> reply : replies) {
 							if (reply.getLocution() instanceof WhyRejectLocution) {
 								hasWhy = true;
 								break;
@@ -315,32 +327,36 @@ public class BDIAgent implements Agent, StrategyExposer {
 						if (!hasWhy) {
 							// No why-reject reply yet: check if we can (should) make this move
 							if (!((Boolean) this.properties.get(Property.OnlyWhyRejectIfArgument)) ||
-									helper.generateRebuttal(this.beliefs, this.dialogue.getTopicGoal().getGoalContent(), 0.0, attacker, existingProposal.getReplies(attacker), Arrays.asList(new Rule(existingProposal.getProposalLocution().getConcreteProposal()))) == null) {
-								moves.add(Move.buildMove(this.participant, attacker, new WhyRejectLocution(existingProposal)));
+									helper.generateArgument(this.beliefs, this.dialogue.getTopicGoal().getGoalContent(), 
+											0.0, attackMove, replies, optionAsKnowledge) == null) {
+								moves.add(Move.buildMove(this.participant, attackMove, new WhyRejectLocution(existingProposal)));
 								break;
 							}
 						}
 						
-					} else if (attacker.getLocution() instanceof ArgueLocution) {
+					} else if (attacker instanceof ArgueLocution) {
 						
-						// An argue(A => p) move may be questioned with why(q) where q \in A: check if we can (should) make this move
+						// An argue(A) move may be questioned with why(q) where q \in prem(A): check if we can (should) make this move
 						WhyLocution whyLocution = null;
 						if ((Boolean) this.properties.get(Property.OnlyWhyIfCounterArgument)) {
 							// Check if we actually have a counter argument
-							RuleArgument underminer = helper.generateUnderminerOrUndercutter(this.beliefs, ((ArgueLocution)attacker.getLocution()).getArgument(), (Move<ArgueLocution>) attacker, existingProposal.getReplies(attacker), Arrays.asList(new Rule(existingProposal.getProposalLocution().getConcreteProposal())));
+							RuleArgument underminer = helper.generateUnderminerOrUndercutter(this.beliefs, ((ArgueLocution)attacker).getArgument(), 
+									(Move<ArgueLocution>) attackMove, replies, optionAsKnowledge);
 							if (underminer != null) {
 								whyLocution = new WhyLocution(underminer.getClaim().negation());
 							}
 						} else {
 							// No checking: just generate a why move for the first non-questioned premise
-							Constant premiseToAttack = helper.generateUncheckedUnderminerOrUndercutter(((ArgueLocution)attacker.getLocution()).getArgument(), existingProposal, (Move<ArgueLocution>) attacker, existingProposal.getReplies(attacker), existingProposal.getProposalLocution().getConcreteProposal());
+							Constant premiseToAttack = helper.generateUncheckedUnderminerOrUndercutter(((ArgueLocution)attacker).getArgument(), 
+									existingProposal, (Move<ArgueLocution>) attackMove, replies, 
+									existingProposal.getProposalLocution().getConcreteProposal());
 							if (premiseToAttack != null) {
 								whyLocution = new WhyLocution(premiseToAttack);
 							}
 						}
 						
 						if (whyLocution != null) {
-							moves.add(Move.buildMove(this.participant, attacker, whyLocution));
+							moves.add(Move.buildMove(this.participant, attackMove, whyLocution));
 							break;
 						}
 						
@@ -403,14 +419,14 @@ public class BDIAgent implements Agent, StrategyExposer {
 					if (!isBeliefInOptions(b) && !beliefs.ruleExists(new Rule(b))) {
 						if ((Boolean)this.properties.get(Property.AdoptOnlyDefensibleBeliefs)) {
 							// ... see if we have an argument for it
-							List<RuleArgument> proofs = helper.findProof(new ConstantList(b), 0.0, this.beliefs, this.optionBeliefs);
+							List<RuleArgument> proofs = helper.findProof(new ConstantList(b), 0.0, this.beliefs, this.optionBeliefs, null);
 							if (proofs.size() > 0) {
 								// We have an argument for this move belief: add it to our own knowledge
 								beliefs.addRule(new Rule(b));
 							}
 						} else {
 							// ... see if we have no counter argument to it
-							List<RuleArgument> proofs = helper.findProof(new ConstantList(b.negation()), 0.0, this.beliefs, this.optionBeliefs);
+							List<RuleArgument> proofs = helper.findProof(new ConstantList(b.negation()), 0.0, this.beliefs, this.optionBeliefs, null);
 							if (proofs.size() == 0) {
 								// We have an argument for this move belief: add it to our own knowledge
 								beliefs.addRule(new Rule(b));
@@ -436,7 +452,7 @@ public class BDIAgent implements Agent, StrategyExposer {
 	private List<Constant> generateOptions() throws ParseException, ReasonerException {
 	
 		Term topic = this.dialogue.getTopic();
-		List<RuleArgument> proofs = helper.findProof(new ConstantList(topic), 0.0, this.beliefs, this.optionBeliefs);
+		List<RuleArgument> proofs = helper.findProof(new ConstantList(topic), 0.0, this.beliefs, this.optionBeliefs, null);
 		List<Constant> found = new ArrayList<Constant>();
 		
 		// If there are arguments found, use one to create a new proposal
@@ -514,7 +530,7 @@ public class BDIAgent implements Agent, StrategyExposer {
 			}
 			
 			// If the option is currently a proposal that is 'in', and the utility = 0, try to destroy it
-			if (option.getUtility() == 0) {
+			if (option.getUtility() < (Integer)this.properties.get(Property.MinimumUtilityForBuild)) {
 				for (Proposal proposal : this.dialogue.getProposals()) {
 					if (proposal.getProposalLocution().getConcreteProposal().equals(option.getOption())) {
 						if (proposal.isIn()) {
@@ -523,6 +539,8 @@ public class BDIAgent implements Agent, StrategyExposer {
 						break;
 					}					
 				}
+				// And when not yet proposed, also destroy it
+				option.updateStrategy(Strategy.Destroy);
 			}
 			
 		}
