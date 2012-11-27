@@ -121,7 +121,10 @@ public class KnowledgeBaseSource implements Cloneable {
 	public void setRebuttingRestricted(boolean restricted) {
 		this.restrictedRebutting=restricted;
 	}
-	
+
+	/**
+	 * @deprecated Warning: leaks memory!
+	 */
 	public Object clone() {
 		KnowledgeBaseSource o = null;
 		try {

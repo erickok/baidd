@@ -1,10 +1,10 @@
 package nl.uu.cs.arg.shared.dialogue.locutions;
 
-import java.util.List;
-
-import org.aspic.inference.Constant;
+import java.util.Set;
 
 import nl.uu.cs.arg.shared.dialogue.Proposal;
+
+import org.aspic.inference.Constant;
 
 /**
  * The reject(P) locution is used to reject a proposal that is made (in
@@ -42,11 +42,10 @@ public class RejectLocution extends AttackingLocution {
 	}
 
 	/**
-	 * Returns null, since rejecting never expose new beliefs
+	 * No beliefs are added, since rejecting never expose new beliefs
 	 */
 	@Override
-	public List<Constant> getPublicBeliefs() {
-		return null;
+	public void gatherPublicBeliefs(Set<Constant> exposedBeliefs) {
 	}
 
 }

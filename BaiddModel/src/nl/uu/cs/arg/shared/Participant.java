@@ -44,6 +44,12 @@ public class Participant {
 		return this.name;
 	}
 	
+	@Override
+	public int hashCode() {
+		return id;
+	};
+	
+	@Override
 	public String toString() {
 		return "P" + this.getID();
 	}

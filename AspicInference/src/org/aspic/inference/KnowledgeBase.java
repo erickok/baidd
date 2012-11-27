@@ -74,7 +74,7 @@ public class KnowledgeBase implements Cloneable, Serializable {
      * Get list of non auto-generated rules.
      * @return list of non auto-generated rules.
      */
-    public List getRules(){        
+    public List<Rule> getRules(){        
         List<Rule> myrules = new Vector<Rule>();
         Iterator<Rule> ruleIterator = this.ruleIterator();        
         while (ruleIterator.hasNext()) {

@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="WINDOWS-1252" standalone="no"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <jardesc>
-    <jar path="E:/Eric/Dev/baidd-0.1-bundled.jar"/>
+    <jar path="/var/data/Dev/baidd1/baidd-bundled.jar"/>
     <options buildIfNeeded="true" compress="true" descriptionLocation="/BaiddPlatform/CreateBundledJar.jardesc" exportErrors="false" exportWarnings="false" includeDirectoryEntries="false" overwrite="false" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
     <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
     <selectedProjects/>
-    <manifest generateManifest="true" mainClassHandleIdentifier="=BaiddPlatform/src&lt;nl.uu.cs.arg.platform.gui{DialogueViewer.java[DialogueViewer" manifestLocation="" manifestVersion="1.0" reuseManifest="false" saveManifest="false" usesManifest="true">
+    <manifest generateManifest="true" mainClassHandleIdentifier="=BaiddExp/src&lt;nl.uu.cs.arg.exp{Experiment.java[Experiment" manifestLocation="" manifestVersion="1.0" reuseManifest="false" saveManifest="false" usesManifest="true">
         <sealing sealJar="false">
             <packagesToSeal/>
             <packagesToUnSeal/>
@@ -13,14 +13,10 @@
     <selectedElements exportClassFiles="false" exportJavaFiles="false" exportOutputFolder="true">
         <folder path="/BaiddPlatform/lib"/>
         <javaElement handleIdentifier="=BaiddPlatform/src"/>
-        <file path="/BaiddModel/.project"/>
-        <file path="/AspicInference/.classpath"/>
-        <file path="/BaiddModel/.classpath"/>
+        <javaElement handleIdentifier="=BaiddModel"/>
         <file path="/BaiddPlatform/.project"/>
-        <javaElement handleIdentifier="=AspicInference/src"/>
-        <javaElement handleIdentifier="=BaiddModel/src"/>
-        <file path="/AspicInference/.project"/>
+        <javaElement handleIdentifier="=BaiddExp"/>
         <file path="/BaiddPlatform/.classpath"/>
-        <folder path="/AspicInference/lib"/>
+        <javaElement handleIdentifier="=AspicInference"/>
     </selectedElements>
 </jardesc>

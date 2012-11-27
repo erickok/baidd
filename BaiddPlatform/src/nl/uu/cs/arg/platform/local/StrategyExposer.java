@@ -8,12 +8,11 @@ import org.aspic.inference.Constant;
 
 public interface StrategyExposer {
 
-	public List<ValuedOption> getAllOptions();
+	List<ValuedOption> getAllOptions();
 
-	public int getInitialBeliefsCount();
+	Set<Constant> getInitialBeliefs();
 
-	public int getPrivateBeliefsCount(Set<Constant> publicbeliefs);
+	Map<String, Object> getStategyProperties();
 
-	public Map<String, Object> getStategyProperties();
 	
 }

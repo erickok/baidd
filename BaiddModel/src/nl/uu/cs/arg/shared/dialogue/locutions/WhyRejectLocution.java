@@ -1,10 +1,10 @@
 package nl.uu.cs.arg.shared.dialogue.locutions;
 
-import java.util.List;
-
-import org.aspic.inference.Constant;
+import java.util.Set;
 
 import nl.uu.cs.arg.shared.dialogue.Proposal;
+
+import org.aspic.inference.Constant;
 
 /**
  * The why-reject(P) locution is used to question the rejection of a 
@@ -42,11 +42,10 @@ public class WhyRejectLocution extends AttackingLocution {
 	}
 
 	/**
-	 * Returns null, since questioning rejections never expose new beliefs
+	 * No beliefs added, since questioning rejections never expose new beliefs
 	 */
 	@Override
-	public List<Constant> getPublicBeliefs() {
-		return null;
+	public void gatherPublicBeliefs(Set<Constant> exposedBeliefs) {
 	}
 
 }

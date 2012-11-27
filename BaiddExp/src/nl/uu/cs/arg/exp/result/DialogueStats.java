@@ -30,16 +30,14 @@ public class DialogueStats {
 	public Integer e_moves;
 	//public Float e_weakrelevance;
 	public Float e_strongrelevance;
-	public Map<Participant, Float> e_privatebeliefs;
-	public Float e_privatebeliefs_avg;
-	public Map<Participant, Float> e_loan;
-	public Float e_loan_avg;
+	public Float e_concealment;
 	public Map<Constant, Integer> e_totalutility;
 	public Float e_total_avg;
 	public Integer e_total_o;
 	public Float e_total_in_avg;
 	public Constant o = null;
 	public Map<Constant, Boolean> e_pareto;
+	public Boolean e_pareto_o;
 
 	public DialogueStats(Dialogue dialogue, int id, Date date, int configId, Settings settings, int optionsCount, String agentStrategy) {
 		this.dialogue = dialogue;

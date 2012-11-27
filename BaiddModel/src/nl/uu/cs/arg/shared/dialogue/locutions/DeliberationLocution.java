@@ -1,6 +1,6 @@
 package nl.uu.cs.arg.shared.dialogue.locutions;
 
-import java.util.List;
+import java.util.Set;
 
 import org.aspic.inference.Constant;
 
@@ -21,9 +21,9 @@ public abstract class DeliberationLocution extends Locution {
 	}
 
 	/**
-	 * Get the list of elements (constants, terms) that this locution exposes
-	 * @return
+	 * Get the list of elements (constants, terms and rules) that this locution exposes
+	 * @param exposedBeliefs The set to which exposed beliefs should be added
 	 */
-	public abstract List<Constant> getPublicBeliefs();
+	public abstract void gatherPublicBeliefs(Set<Constant> exposedBeliefs);
 	
 }

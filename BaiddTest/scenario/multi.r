@@ -13,7 +13,6 @@ G_s2 <- G_s[arg > 0]
 O_r2 <- O_r[arg > 0]
 G_r2 <- G_r[arg > 0]
 l2 <- l[arg > 0]
-B_nro2 <- B_nro[arg > 0]
 G_nro2 <- G_nro[arg > 0]
 B_ra2 <- B_ra[arg > 0]
 B_nra2 <- B_nra[arg > 0]
@@ -29,7 +28,6 @@ G_s3 <- G_s[argToGd > 0]
 O_r3 <- O_r[argToGd > 0]
 G_r3 <- G_r[argToGd > 0]
 l3 <- l[argToGd > 0]
-B_nro3 <- B_nro[argToGd > 0]
 G_nro3 <- G_nro[argToGd > 0]
 B_ra3 <- B_ra[argToGd > 0]
 B_nra3 <- B_nra[argToGd > 0]
@@ -68,10 +66,10 @@ mean(cop)
 sd(cop)
 
 # Lineair model
-oji <- lm(oj ~ Conflicts+A+R+B_s+O_s+G_s+O_r+G_r+l+B_nro+G_nro+B_ra+B_nra)
-coji <- lm(coj ~ Conflicts2+A2+R2+B_s2+O_s2+G_s2+O_r2+G_r2+l2+B_nro2+G_nro2+B_ra2+B_nra2)
-opi <- lm(op ~ Conflicts+A+R+B_s+O_s+G_s+O_r+G_r+l+B_nro+G_nro+B_ra+B_nra)
-copi <- lm(cop ~ Conflicts3+A3+R3+B_s3+O_s3+G_s3+O_r3+G_r3+l3+B_nro3+G_nro3+B_ra3+B_nra3)
+oji <- lm(oj ~ Conflicts+A+R+B_s+O_s+G_s+O_r+G_r+l+G_nro+B_ra+B_nra)
+coji <- lm(coj ~ Conflicts2+A2+R2+B_s2+O_s2+G_s2+O_r2+G_r2+l2+G_nro2+B_ra2+B_nra2)
+opi <- lm(op ~ Conflicts+A+R+B_s+O_s+G_s+O_r+G_r+l+G_nro+B_ra+B_nra)
+copi <- lm(cop ~ Conflicts3+A3+R3+B_s3+O_s3+G_s3+O_r3+G_r3+l3+G_nro3+B_ra3+B_nra3)
 
 # Shows significance and unstandardized coefficients
 summary(oji)
@@ -88,7 +86,6 @@ oji$coefficients["G_s"] * sd(G_s) / sd(oj)
 oji$coefficients["O_r"] * sd(O_r) / sd(oj)
 oji$coefficients["G_r"] * sd(G_r) / sd(oj)
 oji$coefficients["l"] * sd(l) / sd(oj)
-oji$coefficients["B_nro"] * sd(B_nro) / sd(oj)
 oji$coefficients["G_nro"] * sd(G_nro) / sd(oj)
 oji$coefficients["B_ra"] * sd(B_ra) / sd(oj)
 oji$coefficients["B_nra"] * sd(B_nra) / sd(oj)
@@ -101,7 +98,6 @@ coji$coefficients["G_s2"] * sd(G_s2) / sd(coj)
 coji$coefficients["O_r2"] * sd(O_r2) / sd(coj)
 coji$coefficients["G_r2"] * sd(G_r2) / sd(coj)
 coji$coefficients["l2"] * sd(l2) / sd(coj)
-coji$coefficients["B_nro2"] * sd(B_nro2) / sd(coj)
 coji$coefficients["G_nro2"] * sd(G_nro2) / sd(coj)
 coji$coefficients["B_ra2"] * sd(B_ra2) / sd(coj)
 coji$coefficients["B_nra2"] * sd(B_nra2) / sd(coj)
@@ -115,7 +111,6 @@ opi$coefficients["G_s"] * sd(G_s) / sd(op)
 opi$coefficients["O_r"] * sd(O_r) / sd(op)
 opi$coefficients["G_r"] * sd(G_r) / sd(op)
 opi$coefficients["l"] * sd(l) / sd(op)
-opi$coefficients["B_nro"] * sd(B_nro) / sd(op)
 opi$coefficients["G_nro"] * sd(G_nro) / sd(op)
 opi$coefficients["B_ra"] * sd(B_ra) / sd(op)
 opi$coefficients["B_nra"] * sd(B_nra) / sd(op)
@@ -128,7 +123,6 @@ copi$coefficients["G_s3"] * sd(G_s3) / sd(cop)
 copi$coefficients["O_r3"] * sd(O_r3) / sd(cop)
 copi$coefficients["G_r3"] * sd(G_r3) / sd(cop)
 copi$coefficients["l3"] * sd(l3) / sd(cop)
-copi$coefficients["B_nro3"] * sd(B_nro3) / sd(cop)
 copi$coefficients["G_nro3"] * sd(G_nro3) / sd(cop)
 copi$coefficients["B_ra3"] * sd(B_ra3) / sd(cop)
 copi$coefficients["B_nra3"] * sd(B_nra3) / sd(cop)
@@ -150,7 +144,6 @@ G_s[which(p_oj == max(p_oj))]
 O_r[which(p_oj == max(p_oj))]
 G_r[which(p_oj == max(p_oj))]
 l[which(p_oj == max(p_oj))]
-B_nro[which(p_oj == max(p_oj))]
 G_nro[which(p_oj == max(p_oj))]
 B_ra[which(p_oj == max(p_oj))]
 B_nra[which(p_oj == max(p_oj))]
@@ -164,7 +157,6 @@ G_s2[which(p_coj == max(p_coj))]
 O_r2[which(p_coj == max(p_coj))]
 G_r2[which(p_coj == max(p_coj))]
 l2[which(p_coj == max(p_coj))]
-B_nro2[which(p_coj == max(p_coj))]
 G_nro2[which(p_coj == max(p_coj))]
 B_ra2[which(p_coj == max(p_coj))]
 B_nra2[which(p_coj == max(p_coj))]
@@ -178,7 +170,6 @@ G_s[which(p_op == max(p_op))]
 O_r[which(p_op == max(p_op))]
 G_r[which(p_op == max(p_op))]
 l[which(p_op == max(p_op))]
-B_nro[which(p_op == max(p_op))]
 G_nro[which(p_op == max(p_op))]
 B_ra[which(p_op == max(p_op))]
 B_nra[which(p_op == max(p_op))]
@@ -192,7 +183,6 @@ G_s3[which(p_cop == max(p_cop))]
 O_r3[which(p_cop == max(p_cop))]
 G_r3[which(p_cop == max(p_cop))]
 l3[which(p_cop == max(p_cop))]
-B_nro3[which(p_cop == max(p_cop))]
 G_nro3[which(p_cop == max(p_cop))]
 B_ra3[which(p_cop == max(p_cop))]
 B_nra3[which(p_cop == max(p_cop))]

@@ -1,6 +1,6 @@
 package nl.uu.cs.arg.shared.dialogue.locutions;
 
-import java.util.List;
+import java.util.Set;
 
 import org.aspic.inference.Constant;
 
@@ -20,11 +20,10 @@ public abstract class SurrenderingLocution extends DeliberationLocution {
 	}
 
 	/**
-	 * Returns null, since surrendering replies never expose new beliefs
+	 * No belief added, since surrendering replies never expose new beliefs
 	 */
 	@Override
-	public List<Constant> getPublicBeliefs() {
-		return null;
+	public void gatherPublicBeliefs(Set<Constant> exposedBeliefs) {
 	}
 	
 }

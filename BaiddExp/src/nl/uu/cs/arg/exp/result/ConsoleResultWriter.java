@@ -58,17 +58,11 @@ public class ConsoleResultWriter implements ExperimentResultWriter {
 		System.out.println();
 		System.out.println("e_move = " + stats.e_moves);
 		System.out.println("e_relevance^strong = " + stats.e_strongrelevance);
-		System.out.println("e_private_avg = " + stats.e_privatebeliefs_avg);
-		for (Entry<Participant, Float> p : stats.e_privatebeliefs.entrySet()) {
-			System.out.println("e_private^" + p.getKey().getName() + " = " + p.getValue().toString());
-		}
-		System.out.println("e_loan_avg = " + stats.e_loan_avg);
-		for (Entry<Participant, Float> p : stats.e_loan.entrySet()) {
-			System.out.println("e_loan^" + p.getKey().getName() + " = " + (p.getValue() == null? "null": p.getValue().toString()));
-		}
+		System.out.println("e_concealment = " + stats.e_concealment);
 		System.out.println("e_total^avg = " + stats.e_total_avg);
 		System.out.println("e_total^avg_in = " + stats.e_total_in_avg);
 		System.out.println("e_total_o = " + stats.e_total_o);
+		System.out.println("e_pareto_o = " + stats.e_pareto_o.toString());
 		for (Entry<Constant, Integer> p : stats.e_totalutility.entrySet()) {
 			System.out.println("e_total^" + p.getKey().inspect() + " = " + p.getValue().toString());
 		}

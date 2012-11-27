@@ -40,7 +40,6 @@ public class ScenarioTester {
 	private final int n_O_r[];
 	private final int n_G_r[];
 	private final int l[];
-	private final int n_B_nro[];
 	private final int n_G_nro[];
 	private final int n_B_ra[];
 	private final int n_B_nra[];
@@ -54,7 +53,7 @@ public class ScenarioTester {
 	
 	private static final Random random = new Random();
 
-	public ScenarioTester(String g_d) {
+	public ScenarioTester(String g_d, boolean printResultsToConsole) {
 		this.g_d = g_d;
 		this.n_A = new int[] {};
 		this.n_R = new int[] {};
@@ -64,7 +63,6 @@ public class ScenarioTester {
 		this.n_O_r = new int[] {};
 		this.n_G_r = new int[] {};
 		this.l = new int[] {};
-		this.n_B_nro = new int[] {};
 		this.n_G_nro = new int[] {};
 		this.n_B_ra = new int[] {};
 		this.n_B_nra = new int[] {};
@@ -72,11 +70,11 @@ public class ScenarioTester {
 		this.roleAssignment = null;
 		this.conflictMethods = null;
 		this.needsToNotHaveAnArgument = false;
-		this.printResultsToConsole = true;
+		this.printResultsToConsole = printResultsToConsole;
 	}
 
 	public ScenarioTester(String g_d, int[] n_A, int[] n_R, int[] n_B_c, int[] n_O_c, int[] n_G_c, int[] n_O_r,
-			int[] n_G_r, int[] l, int[] n_B_nro, int[] n_G_nro, int[] n_B_ra, int[] n_B_nra,
+			int[] n_G_r, int[] l, int[] n_G_nro, int[] n_B_ra, int[] n_B_nra,
 			AssignmentMethod beliefAssignment, AssignmentMethod roleAssignment, ConflictMethod[] conflictMethods,
 			boolean needsToNotHaveAnArgument, boolean printResultsToConsole) {
 		this.g_d = g_d;
@@ -88,7 +86,6 @@ public class ScenarioTester {
 		this.n_O_r = n_O_r;
 		this.n_G_r = n_G_r;
 		this.l = l;
-		this.n_B_nro = n_B_nro;
 		this.n_G_nro = n_G_nro;
 		this.n_B_ra = n_B_ra;
 		this.n_B_nra = n_B_nra;
@@ -118,7 +115,6 @@ public class ScenarioTester {
 				new int[] { 2 }, // n_O_r
 				new int[] { 5 }, // n_G_r
 				new int[] { 3 }, // l
-				new int[] { 12 }, // n_B_nro
 				new int[] { 2 }, // n_G_nro
 				new int[] { 75 }, // n_B_ra
 				new int[] { 6 }, // n_B_nra
@@ -143,7 +139,6 @@ public class ScenarioTester {
 		int i_O_r = random.nextInt(n_O_r.length);
 		int i_G_r = random.nextInt(n_G_r.length);
 		int i_l = random.nextInt(l.length);
-		int i_B_nro = random.nextInt(n_B_nro.length);
 		int i_G_nro = random.nextInt(n_G_nro.length);
 		int i_B_ra = random.nextInt(n_B_ra.length);
 		int i_B_nra = random.nextInt(n_B_nra.length);
@@ -188,10 +183,6 @@ public class ScenarioTester {
 			confDiffHeader += ScenarioExperiment.COLUMN_SEPARATOR + "l";
 			confDiff += ScenarioExperiment.COLUMN_SEPARATOR + l[i_l];
 		}
-		if (n_B_nro.length > 1) {
-			confDiffHeader += ScenarioExperiment.COLUMN_SEPARATOR + "B_nro";
-			confDiff += ScenarioExperiment.COLUMN_SEPARATOR + n_B_nro[i_B_nro];
-		}
 		if (n_G_nro.length > 1) {
 			confDiffHeader += ScenarioExperiment.COLUMN_SEPARATOR + "G_nro";
 			confDiff += ScenarioExperiment.COLUMN_SEPARATOR + n_G_nro[i_G_nro];
@@ -220,7 +211,6 @@ public class ScenarioTester {
 				n_O_r[i_O_r],
 				n_G_r[i_G_r],
 				l[i_l],
-				n_B_nro[i_B_nro],
 				n_G_nro[i_G_nro],
 				n_B_ra[i_B_ra],
 				n_B_nra[i_B_nra],
@@ -239,89 +229,82 @@ public class ScenarioTester {
 								for (int i_O_r = 0; i_O_r < n_O_r.length; i_O_r++) {
 									for (int i_G_r = 0; i_G_r < n_G_r.length; i_G_r++) {
 										for (int i_l = 0; i_l < l.length; i_l++) {
-											for (int i_B_nro = 0; i_B_nro < n_B_nro.length; i_B_nro++) {
-												for (int i_G_nro = 0; i_G_nro < n_G_nro.length; i_G_nro++) {
-													for (int i_B_ra = 0; i_B_ra < n_B_ra.length; i_B_ra++) {
-														for (int i_B_nra = 0; i_B_nra < n_B_nra.length; i_B_nra++) {
-	
-															// Construct a header and the configuration for the variables that actually differ (i.e. are experimented with)
-															String confDiffHeader = "";
-															String confDiff = "";
-															if (conflictMethods.length > 1) {
-																confDiffHeader += ScenarioExperiment.COLUMN_SEPARATOR + "Conflict";
-																confDiff += ScenarioExperiment.COLUMN_SEPARATOR + conflictMethods[i_conflictMethods];
-															}
-															if (n_A.length > 1) {
-																confDiffHeader += ScenarioExperiment.COLUMN_SEPARATOR + "A";
-																confDiff += ScenarioExperiment.COLUMN_SEPARATOR + n_A[i_A];
-															}
-															if (n_R.length > 1) {
-																confDiffHeader += ScenarioExperiment.COLUMN_SEPARATOR + "R";
-																confDiff += ScenarioExperiment.COLUMN_SEPARATOR + n_R[i_R];
-															}
-															if (n_B_s.length > 1) {
-																confDiffHeader += ScenarioExperiment.COLUMN_SEPARATOR + "B_s";
-																confDiff += ScenarioExperiment.COLUMN_SEPARATOR + n_B_s[i_B_s];
-															}
-															if (n_O_s.length > 1) {
-																confDiffHeader += ScenarioExperiment.COLUMN_SEPARATOR + "O_s";
-																confDiff += ScenarioExperiment.COLUMN_SEPARATOR + n_O_s[i_O_s];
-															}
-															if (n_G_s.length > 1) {
-																confDiffHeader += ScenarioExperiment.COLUMN_SEPARATOR + "G_s";
-																confDiff += ScenarioExperiment.COLUMN_SEPARATOR + n_G_s[i_G_s];
-															}
-															if (n_O_r.length > 1) {
-																confDiffHeader += ScenarioExperiment.COLUMN_SEPARATOR + "O_r";
-																confDiff += ScenarioExperiment.COLUMN_SEPARATOR + n_O_r[i_O_r];
-															}
-															if (n_G_r.length > 1) {
-																confDiffHeader += ScenarioExperiment.COLUMN_SEPARATOR + "G_r";
-																confDiff += ScenarioExperiment.COLUMN_SEPARATOR + n_G_r[i_G_r];
-															}
-															if (l.length > 1) {
-																confDiffHeader += ScenarioExperiment.COLUMN_SEPARATOR + "l";
-																confDiff += ScenarioExperiment.COLUMN_SEPARATOR + l[i_l];
-															}
-															if (n_B_nro.length > 1) {
-																confDiffHeader += ScenarioExperiment.COLUMN_SEPARATOR + "B_nro";
-																confDiff += ScenarioExperiment.COLUMN_SEPARATOR + n_B_nro[i_B_nro];
-															}
-															if (n_G_nro.length > 1) {
-																confDiffHeader += ScenarioExperiment.COLUMN_SEPARATOR + "G_nro";
-																confDiff += ScenarioExperiment.COLUMN_SEPARATOR + n_G_nro[i_G_nro];
-															}
-															if (n_B_ra.length > 1) {
-																confDiffHeader += ScenarioExperiment.COLUMN_SEPARATOR + "B_ra";
-																confDiff += ScenarioExperiment.COLUMN_SEPARATOR + n_B_ra[i_B_ra];
-															}
-															if (n_B_nra.length > 1) {
-																confDiffHeader += ScenarioExperiment.COLUMN_SEPARATOR + "B_nra";
-																confDiff += ScenarioExperiment.COLUMN_SEPARATOR + n_B_nra[i_B_nra];
-															}
-															confDiffHeader = confDiffHeader.trim();
-															if (confDiffHeader.length() > 0) confDiffHeader = confDiffHeader.substring(1);
-															confDiff = confDiff.trim();
-															if (confDiff.length() > 0) confDiff = confDiff.substring(1);
-																
-															test(confDiffHeader, confDiff, 
-																	g_d,
-																	conflictMethods[i_conflictMethods],
-																	n_A[i_A],
-																	n_R[i_R],
-																	n_B_s[i_B_s],
-																	n_O_s[i_O_s],
-																	n_G_s[i_G_s],
-																	n_O_r[i_O_r],
-																	n_G_r[i_G_r],
-																	l[i_l],
-																	n_B_nro[i_B_nro],
-																	n_G_nro[i_G_nro],
-																	n_B_ra[i_B_ra],
-																	n_B_nra[i_B_nra],
-																	beliefAssignment,
-																	roleAssignment);
+											for (int i_G_nro = 0; i_G_nro < n_G_nro.length; i_G_nro++) {
+												for (int i_B_ra = 0; i_B_ra < n_B_ra.length; i_B_ra++) {
+													for (int i_B_nra = 0; i_B_nra < n_B_nra.length; i_B_nra++) {
+
+														// Construct a header and the configuration for the variables that actually differ (i.e. are experimented with)
+														String confDiffHeader = "";
+														String confDiff = "";
+														if (conflictMethods.length > 1) {
+															confDiffHeader += ScenarioExperiment.COLUMN_SEPARATOR + "Conflict";
+															confDiff += ScenarioExperiment.COLUMN_SEPARATOR + conflictMethods[i_conflictMethods];
 														}
+														if (n_A.length > 1) {
+															confDiffHeader += ScenarioExperiment.COLUMN_SEPARATOR + "A";
+															confDiff += ScenarioExperiment.COLUMN_SEPARATOR + n_A[i_A];
+														}
+														if (n_R.length > 1) {
+															confDiffHeader += ScenarioExperiment.COLUMN_SEPARATOR + "R";
+															confDiff += ScenarioExperiment.COLUMN_SEPARATOR + n_R[i_R];
+														}
+														if (n_B_s.length > 1) {
+															confDiffHeader += ScenarioExperiment.COLUMN_SEPARATOR + "B_s";
+															confDiff += ScenarioExperiment.COLUMN_SEPARATOR + n_B_s[i_B_s];
+														}
+														if (n_O_s.length > 1) {
+															confDiffHeader += ScenarioExperiment.COLUMN_SEPARATOR + "O_s";
+															confDiff += ScenarioExperiment.COLUMN_SEPARATOR + n_O_s[i_O_s];
+														}
+														if (n_G_s.length > 1) {
+															confDiffHeader += ScenarioExperiment.COLUMN_SEPARATOR + "G_s";
+															confDiff += ScenarioExperiment.COLUMN_SEPARATOR + n_G_s[i_G_s];
+														}
+														if (n_O_r.length > 1) {
+															confDiffHeader += ScenarioExperiment.COLUMN_SEPARATOR + "O_r";
+															confDiff += ScenarioExperiment.COLUMN_SEPARATOR + n_O_r[i_O_r];
+														}
+														if (n_G_r.length > 1) {
+															confDiffHeader += ScenarioExperiment.COLUMN_SEPARATOR + "G_r";
+															confDiff += ScenarioExperiment.COLUMN_SEPARATOR + n_G_r[i_G_r];
+														}
+														if (l.length > 1) {
+															confDiffHeader += ScenarioExperiment.COLUMN_SEPARATOR + "l";
+															confDiff += ScenarioExperiment.COLUMN_SEPARATOR + l[i_l];
+														}
+														if (n_G_nro.length > 1) {
+															confDiffHeader += ScenarioExperiment.COLUMN_SEPARATOR + "G_nro";
+															confDiff += ScenarioExperiment.COLUMN_SEPARATOR + n_G_nro[i_G_nro];
+														}
+														if (n_B_ra.length > 1) {
+															confDiffHeader += ScenarioExperiment.COLUMN_SEPARATOR + "B_ra";
+															confDiff += ScenarioExperiment.COLUMN_SEPARATOR + n_B_ra[i_B_ra];
+														}
+														if (n_B_nra.length > 1) {
+															confDiffHeader += ScenarioExperiment.COLUMN_SEPARATOR + "B_nra";
+															confDiff += ScenarioExperiment.COLUMN_SEPARATOR + n_B_nra[i_B_nra];
+														}
+														confDiffHeader = confDiffHeader.trim();
+														if (confDiffHeader.length() > 0) confDiffHeader = confDiffHeader.substring(1);
+														confDiff = confDiff.trim();
+														if (confDiff.length() > 0) confDiff = confDiff.substring(1);
+															
+														test(confDiffHeader, confDiff, 
+																g_d,
+																conflictMethods[i_conflictMethods],
+																n_A[i_A],
+																n_R[i_R],
+																n_B_s[i_B_s],
+																n_O_s[i_O_s],
+																n_G_s[i_G_s],
+																n_O_r[i_O_r],
+																n_G_r[i_G_r],
+																l[i_l],
+																n_G_nro[i_G_nro],
+																n_B_ra[i_B_ra],
+																n_B_nra[i_B_nra],
+																beliefAssignment,
+																roleAssignment);
 													}
 												}
 											}
@@ -469,12 +452,10 @@ public class ScenarioTester {
 		}
 
 		// Register results
-		for (ScenarioTestListener listener : allTestListeners ) {
-			listener.writeResult(g_d + " " + n_A + " " + n_R + " " + n_B_s
-					+ " " + n_O_s + " " + n_G_s + " " + n_O_r + " " + n_G_r + " "
-					+ l + " " + n_B_nro + " " + n_G_nro + " " + n_B_ra + " "
-					+ n_B_nra + " " + (beliefAssignment == null? "": beliefAssignment.name()) + " "
-					+ (roleAssignment == null? "": roleAssignment.name()), confDiff == null? "": confDiff, 
+		for (ScenarioTestListener listener : allTestListeners) {
+			// g_d + " " + n_A + " " + n_R + " " + n_B_s + " " + n_O_s + " " + n_G_s + " " + n_O_r + " " + n_G_r + " " + l + " " + n_G_nro + " " + n_B_ra + " " + n_B_nra + " " + (beliefAssignment == null ? "" : beliefAssignment.name()) + " " + (roleAssignment == null ? "" : roleAssignment.name())
+			listener.writeResult("", 
+					confDiff == null ? "" : confDiff,
 					agents.size(),
 					totalO,
 					totalArgToGd,
@@ -486,20 +467,20 @@ public class ScenarioTester {
 	}
 
 	private void test(String confDiffHeader, String confDiff, String g_d, ConflictMethod conflictMethod, int n_A,
-			int n_R, int n_B_s, int n_O_s, int n_G_s, int n_O_r, int n_G_r, int l, int n_B_nro, int n_G_nro,
+			int n_R, int n_B_s, int n_O_s, int n_G_s, int n_O_r, int n_G_r, int l, int n_G_nro,
 			int n_B_ra, int n_B_nra, AssignmentMethod beliefAssignment, AssignmentMethod roleAssignment)
 			throws InvalidConfigurationException {
 
 		// Show which configuration we are testing
 		if (printResultsToConsole ) {
 			System.out.println("Test: " + g_d + " " + conflictMethod + " " + n_A + " " + n_R + " " + n_B_s + " "
-					+ n_O_s + " " + n_G_s + " " + n_O_r + " " + n_G_r + " " + l + " " + n_B_nro + " " + n_G_nro + " "
+					+ n_O_s + " " + n_G_s + " " + n_O_r + " " + n_G_r + " " + l + " " + n_G_nro + " "
 					+ n_B_ra + " " + n_B_nra + " " + beliefAssignment.name() + " " + roleAssignment.name());
 		}
 
 		// Generate scenario
 		ScenarioGenerator scenario = new ScenarioGenerator(g_d, n_A, n_R, n_B_s, n_O_s, n_G_s, n_O_r, n_G_r, l,
-				n_B_nro, n_G_nro, n_B_ra, n_B_nra, beliefAssignment, roleAssignment, conflictMethod);
+				n_G_nro, n_B_ra, n_B_nra, beliefAssignment, roleAssignment, conflictMethod);
 		List<Pool> agents;
 		try {
 			agents = scenario.generate();
@@ -531,7 +512,7 @@ public class ScenarioTester {
 		try {
 			
 			//if (argumentToAttack.isAtomic()) {
-				allProofs.addAll(helper.findProof(new ConstantList(argumentToAttack.getClaim().negation()), argumentToAttack.getModifier(), kb, Arrays.asList(new Rule(option)), option));
+				allProofs.addAll(helper.findProof(new ConstantList(argumentToAttack.getClaim().negation()), argumentToAttack.getModifier(), kb, Arrays.asList(new Rule(option)), null));
 			//}
 			
 			// Look for a counter-argument to a premise/inference of this argument

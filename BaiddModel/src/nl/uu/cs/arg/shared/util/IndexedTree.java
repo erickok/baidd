@@ -128,12 +128,12 @@ public class IndexedTree<T extends IndexedObject> {
      * @param element the starting element.
      * @param list the output of the walk.
      */
-    private void walk(IndexedNode<T> element, List<IndexedNode<T>> list) {
+    /*private void walk(IndexedNode<T> element, List<IndexedNode<T>> list) {
         list.add(element);
         for (IndexedNode<T> data : element.getChildren()) {
             walk(data, list);
         }
-    }
+    }*/
 
     /**
      * Returns a String representation of the tree in a nice format (1 node per rule with indentation to show the hierarchical level)

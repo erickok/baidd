@@ -1,8 +1,8 @@
 package nl.uu.cs.arg.shared.dialogue.locutions;
 
+import java.util.Set;
+
 import org.aspic.inference.Constant;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * A propose(P) move where P is a proposal that should respect the 
@@ -42,9 +42,12 @@ public class ProposeLocution extends DeliberationLocution {
 		return getName() + "(" + getConcreteProposal().inspect() + ")";
 	}
 
+	/**
+	 * Adds the proposed option as exposed belief
+	 */
 	@Override
-	public List<Constant> getPublicBeliefs() {
-		return Arrays.asList((Constant)concreteProposal);
+	public void gatherPublicBeliefs(Set<Constant> exposedBeliefs) {
+		exposedBeliefs.add(concreteProposal);
 	}
 
 }

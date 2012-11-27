@@ -223,7 +223,10 @@ public class Engine implements Cloneable {
 			super(message);
 		}
 	}
-	
+
+	/**
+	 * @deprecated Warning: leaks memory!
+	 */
 	public Object clone() {
 		Engine o = null;
 		try {

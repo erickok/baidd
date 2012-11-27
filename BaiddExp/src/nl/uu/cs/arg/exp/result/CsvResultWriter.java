@@ -6,8 +6,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map.Entry;
 
-import nl.uu.cs.arg.shared.Participant;
-
 import org.aspic.inference.Constant;
 
 /**
@@ -85,18 +83,12 @@ public class CsvResultWriter implements ExperimentResultWriter {
 			
 			w("e_move");
 			w("e_relevance^strong");
-			w("e_private^avg");
-			w("e_loan^avg");
+			w("e_concealment");
 			w("e_total^avg");
 			w("e_total^avg_in");
 			w("e_total^o");
+			w("e_pareto^o");
 
-			for (Entry<Participant, Float> p : stats.e_privatebeliefs.entrySet()) {
-				w("e_private^" + p.getKey().getName());
-			}
-			for (Entry<Participant, Float> p : stats.e_privatebeliefs.entrySet()) {
-				w("e_loan^" + p.getKey().getName());
-			}
 			for (int i = 0; i < stats.optionsCount; i++) {
 				w("e_total^" + i);
 			}
@@ -130,18 +122,12 @@ public class CsvResultWriter implements ExperimentResultWriter {
 
 		w(stats.e_moves);
 		w(stats.e_strongrelevance);
-		w(stats.e_privatebeliefs_avg);
-		w(stats.e_loan_avg);
+		w(stats.e_concealment);
 		w(stats.e_total_avg);
 		w(stats.e_total_in_avg);
 		w(stats.e_total_o);
+		w(stats.e_pareto_o);
 
-		for (Entry<Participant, Float> p : stats.e_privatebeliefs.entrySet()) {
-			w(p.getValue());
-		}
-		for (Entry<Participant, Float> p : stats.e_loan.entrySet()) {
-			w(p.getValue());
-		}
 		for (Entry<Constant, Integer> p : stats.e_totalutility.entrySet()) {
 			w(p.getValue());
 		}
@@ -155,6 +141,9 @@ public class CsvResultWriter implements ExperimentResultWriter {
 	}
 	private void w(Float f) throws IOException {
 		w(f == null? "": Float.toString(f));
+	}
+	private void w(Boolean b) throws IOException {
+		w(b == null? "": Boolean.toString(b));
 	}
 	private void w(String s) throws IOException {
 		outWriter.write(s);

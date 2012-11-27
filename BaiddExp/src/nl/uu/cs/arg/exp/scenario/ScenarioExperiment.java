@@ -24,7 +24,7 @@ public class ScenarioExperiment {
 		ScenarioTestListener csvWriter = null;
 		try {
 			csvWriter = new ScenarioTestCsvWriter(
-					new File("/home/erickok/Dev/baidd1/BaiddTest/scenario/test1/ScenarioExp.csv"),
+					new File("/home/erickok/Dev/baidd1/BaiddTest/scenario/test2/ScenarioExp.csv"),
 					false);
 	
 			// Perform the runs to test a certain scenario configuration
@@ -40,7 +40,6 @@ public class ScenarioExperiment {
 						new int[] { 1,2,3,4,5,6,7,8,9,10 }, // n_O_r
 						new int[] { 1,2,3,4,5,6,7,8,9,10 }, // n_G_r
 						new int[] { 1,2,3,4,5,6,7,8,9,10 }, // l 
-						new int[] { 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 }, // n_B_nro NO LONGER USED!
 						new int[] { 0,1,2,3,4,5,6,7,8,9,10 }, // n_G_nro
 						new int[] { 5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100 }, // n_B_ra
 						new int[] { 0,5,10,15,20,25,30,35,40,45,50 }, // n_B_nra

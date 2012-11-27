@@ -2,9 +2,11 @@ package nl.uu.cs.arg.exp;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import nl.uu.cs.arg.exp.result.DialogueStats;
 import nl.uu.cs.arg.platform.ParticipatingAgent;
@@ -29,6 +31,7 @@ import nl.uu.cs.arg.shared.dialogue.OutcomeMessage;
 import nl.uu.cs.arg.shared.dialogue.Proposal;
 import nl.uu.cs.arg.shared.dialogue.locutions.DeliberationLocution;
 import nl.uu.cs.arg.shared.dialogue.locutions.Locution;
+import nl.uu.cs.arg.shared.util.IndexedNode;
 
 import org.aspic.inference.Constant;
 import org.aspic.inference.Term;
@@ -98,8 +101,6 @@ public class DialogueRun implements PlatformListener {
 		// Count moves and strongly relevant moves
 		for (Move<? extends Locution> move : moves) {
 			if (move.getLocution() instanceof DeliberationLocution) {
-				DeliberationLocution loc = (DeliberationLocution) move.getLocution();
-				
 				// Move efficiency
 				stats.e_moves++;
 				
@@ -115,34 +116,12 @@ public class DialogueRun implements PlatformListener {
 						break;
 					}
 				}
-				
-				
-				if (loc.getPublicBeliefs() != null) {			
-					// Keep track of which beliefs were played first by which player
-					for (Constant belief : loc.getPublicBeliefs()) {
-						if (stats.publicbeliefs.containsKey(belief)) {
-							addOneToBeliefCount(stats.otherbeliefsCount, move.getPlayer());
-						} else {
-							stats.publicbeliefs.put(belief, move.getPlayer());
-							addOneToBeliefCount(stats.ownbeliefsCount, move.getPlayer());
-						}
-					}
-				}
-				
 			}
 		}
 		
 		// Remember the proposal statuses
 		oldProposalStats = newProposalStats;
 		
-	}
-	
-	private void addOneToBeliefCount(Map<Participant, Integer> counter, Participant participant) {
-		if (!counter.containsKey(participant)) {
-			counter.put(participant, 1);
-		} else {
-			counter.put(participant, counter.get(participant) + 1);
-		}
 	}
 	
 	/**
@@ -165,31 +144,14 @@ public class DialogueRun implements PlatformListener {
 			stats.e_strongrelevance = (float)relevantMoves / stats.e_moves;
 		}
 		stats.utilities = new HashMap<Participant, Map<Constant,Integer>>();
-		stats.e_privatebeliefs = new HashMap<Participant, Float>();
-		stats.e_loan = new HashMap<Participant, Float>();
 		stats.e_totalutility = new HashMap<Constant, Integer>();
+		Set<Constant> initialBeliefs = new HashSet<Constant>();
 		for (ParticipatingAgent participant : platform.getJoinedAgents()) {
 			if (participant.getAgent() instanceof StrategyExposer) {
-				Participant p = participant.getParticipant();
 				StrategyExposer agent = (StrategyExposer) participant.getAgent();
 
-				// Degree of loan = % of premises used that were introduced by another agent
-				int ownbeliefs = (stats.ownbeliefsCount.containsKey(p)? stats.ownbeliefsCount.get(p): 0);
-				int othersbeliefs = (stats.otherbeliefsCount.containsKey(p)? stats.otherbeliefsCount.get(p): 0);
-				if (ownbeliefs + othersbeliefs > 0) {
-					stats.e_loan.put(p, 1F - (float)ownbeliefs / (ownbeliefs + othersbeliefs));
-				} else {
-					stats.e_loan.put(p, null);
-				}
-				
-				// Private belief degree
-				int initialCount = agent.getInitialBeliefsCount();
-				int privateCount = agent.getPrivateBeliefsCount(stats.publicbeliefs.keySet());
-				if (initialCount > 0) {
-					stats.e_privatebeliefs.put(p, (float)privateCount / initialCount);
-				} else {
-					stats.e_privatebeliefs.put(p, null);
-				}
+				// Information concealment
+				initialBeliefs.addAll(agent.getInitialBeliefs());
 
 				// Utilities
 				Map<Constant, Integer> agentutility = new HashMap<Constant, Integer>();
@@ -198,57 +160,51 @@ public class DialogueRun implements PlatformListener {
 					Constant setOption = getOption(stats.e_totalutility, option);
 					stats.e_totalutility.put(setOption, stats.e_totalutility.get(setOption) + option.getUtility());
 				}
-				stats.utilities.put(p, agentutility);
+				stats.utilities.put(participant.getParticipant(), agentutility);
 				
 			}
 		}
+		
 		stats.e_pareto = new HashMap<Constant, Boolean>();
-		/*for (Proposal proposal : dialogue.getProposals()) {
+		Set<Constant> exposedBeliefs = new HashSet<Constant>();
+		for (Proposal proposal : dialogue.getProposals()) {
+			
+			// Find exposed beliefs (for information concealment metric)
+			getExposedBeliefs(exposedBeliefs, proposal.getRootElement());
+			
+			// Look up if this proposal was Pareto optimal
 			Constant concProposal = proposal.getProposalLocution().getConcreteProposal();
 			stats.e_pareto.put(concProposal, true);
 			for (Proposal alternative : dialogue.getProposals()) {
 				if (!proposal.equals(alternative)) {
-					
-					// Look at every participant...
+					// Look as the agents' utilities
+					boolean anAgentHasHigher = false, anAgentHasLower = false;
 					for (ParticipatingAgent participant : platform.getJoinedAgents()) {
-						if (participant.getAgent() instanceof StrategyExposer) {
-							
-							// for the assigned utility to this proposal...
-							List<ValuedOption> allOptions = ((StrategyExposer)participant.getAgent()).getAllOptions();
-							int concProposalUtility = 0;
-							for (ValuedOption option : allOptions) {
-								if (option.getOption().isEqualModuloVariables(concProposal)) {
-									concProposalUtility = option.getUtility();
-								}
-								break;
-							}
-							
-							// and look at the utilities it assign to the alternatives...
-							for (ValuedOption option : allOptions) {
-								if (!option.getOption().isEqualModuloVariables(concProposal) && option.getUtility() > concProposalUtility) {
-									// This alternative is preferred by the agent
-									stats.e_pareto.put(concProposal, false);
-									break;
-								}
-							}
+						// Retrieve the utility for the proposal and for the alternative option
+						Integer u_proposal = stats.utilities.get(participant.getParticipant()).get(concProposal);
+						Integer u_alternative = stats.utilities.get(participant.getParticipant()).get(alternative.getProposalLocution().getConcreteProposal());
+						if (u_proposal == null)
+							u_proposal = 0;
+						if (u_alternative == null)
+							u_alternative = 0;
+						if (u_alternative > u_proposal)
+							anAgentHasHigher = true;
+						if (u_proposal > u_alternative) {
+							anAgentHasLower = true;
+							break; // No need to search further; already some agent that would be worse off
 						}
 					}
-					
+					// NOT Pareto if there was an option in which some agent is better off and nobody is worse off
+					if (anAgentHasHigher && !anAgentHasLower) {
+						stats.e_pareto.put(concProposal, false);
+						break; // No need to look at the other alternatives
+					}
 				}
 			}
-		}*/
+			
+		}
 		
 		// Averages and dialogue outcome
-		float privatebeliefsSum = 0F;
-		float loanSum = 0F;
-		for (Entry<Participant, Float> p : stats.e_privatebeliefs.entrySet()) {
-			privatebeliefsSum += p.getValue();
-		}
-		for (Entry<Participant, Float> p : stats.e_loan.entrySet()) {
-			if (p.getValue() != null) { 
-				loanSum += p.getValue();
-			}
-		}
 		if (stats.o == null) {
 			// No dialogue outcome; set the total outcome utility to 0
 			stats.e_total_o = 0;
@@ -273,16 +229,30 @@ public class DialogueRun implements PlatformListener {
 				}
 			}
 		}
-		stats.e_privatebeliefs_avg = privatebeliefsSum / stats.e_privatebeliefs.size();
-		stats.e_loan_avg = loanSum / stats.e_loan.size();
+		stats.e_concealment = (float)(initialBeliefs.size() - exposedBeliefs.size()) / initialBeliefs.size();
 		stats.e_total_avg = (float)totalutilitySum / stats.e_totalutility.size();
 		stats.e_total_in_avg = stats.optionsInCount > 0? (float)totalutilityInSum / stats.optionsInCount: 0F;
+
+		// Had a Pareto outcome (note: did not have a Pareto outcome if no outcome was selected at all)
+		stats.e_pareto_o = false;
+		if (stats.o != null) {
+			stats.e_pareto_o = stats.e_pareto.get(stats.o);
+		}
 		
 		// Return statistics
 		monitor.dialogueTerminated(stats);
 		
 	}
 
+	private void getExposedBeliefs(Set<Constant> exposed, IndexedNode<Move<? extends Locution>> move) {
+		for (IndexedNode<Move<? extends Locution>> reply : move.getChildren()) {
+			getExposedBeliefs(exposed, reply);
+		}
+		if (move.getData().getLocution() instanceof DeliberationLocution) {
+			((DeliberationLocution)move.getData().getLocution()).gatherPublicBeliefs(exposed);
+		}
+	}
+	
 	private Constant getOption(Map<Constant, Integer> eTotalutility, ValuedOption agentOption) {
 		// Find option in the list
 		for (Entry<Constant, Integer> o : eTotalutility.entrySet()) {

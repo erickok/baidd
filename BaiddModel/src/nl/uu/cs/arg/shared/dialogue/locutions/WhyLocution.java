@@ -1,6 +1,6 @@
 package nl.uu.cs.arg.shared.dialogue.locutions;
 
-import java.util.List;
+import java.util.Set;
 
 import org.aspic.inference.Constant;
 
@@ -40,11 +40,10 @@ public final class WhyLocution extends AttackingLocution {
 	}
 
 	/**
-	 * Returns null, since questioning never expose new beliefs
+	 * No beliefs added, since questioning never expose new beliefs
 	 */
 	@Override
-	public List<Constant> getPublicBeliefs() {
-		return null;
+	public void gatherPublicBeliefs(Set<Constant> exposedBeliefs) {
 	}
 
 }

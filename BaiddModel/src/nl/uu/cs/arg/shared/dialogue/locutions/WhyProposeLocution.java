@@ -1,10 +1,10 @@
 package nl.uu.cs.arg.shared.dialogue.locutions;
 
-import java.util.List;
-
-import org.aspic.inference.Constant;
+import java.util.Set;
 
 import nl.uu.cs.arg.shared.dialogue.Proposal;
+
+import org.aspic.inference.Constant;
 
 /**
  * The why-propose(P) locution is used to attack a proposal if an agents
@@ -41,11 +41,10 @@ public class WhyProposeLocution extends AttackingLocution {
 	}
 
 	/**
-	 * Returns null, since questioning proposals never expose new beliefs
+	 * No beliefs added, since questioning proposals never expose new beliefs
 	 */
 	@Override
-	public List<Constant> getPublicBeliefs() {
-		return null;
+	public void gatherPublicBeliefs(Set<Constant> exposedBeliefs) {
 	}
 
 }

@@ -97,7 +97,6 @@ public class Experiment implements DialogueMonitor {
 
 		try {
 
-			final int players = 9;
 			String topic = "do";
 			String goal = "g_d";
 	        Term topicTerm = new Term(topic, new Variable("T"));
@@ -125,20 +124,20 @@ public class Experiment implements DialogueMonitor {
 				}
 
 				// Generate the scenario
-				int optionsCount = 34; // The number of options in the experiment - used to format the dialogue output only
+				final int players = 7;
+				final int optionsCount = 17; // Also used to format the dialogue output only
 				ScenarioGenerator gen = new ScenarioGenerator(goal, 
 						players,		// n_A 
-						6, 				// n_R
-						30, 			// n_B_s
+						8, 				// n_R
+						40, 			// n_B_s
 						optionsCount,	// n_O_s
-						32,	 			// n_G_s
-						10,				// n_O_r
-						10,				// n_G_r
+						12,	 			// n_G_s
+						8,				// n_O_r
+						5,				// n_G_r
 						2,				// l
-						1,				// n_B_nro NO LONGER IN USE!
-						4, 				// n_G_nro
+						2, 				// n_G_nro
 						60, 			// n_B_ra
-						10,	 			// n_B_nra
+						35,	 			// n_B_nra
 						ScenarioGenerator.AssignmentMethod.Randomly, 
 						ScenarioGenerator.AssignmentMethod.Evenly,
 						ConflictMethod.Chained);
@@ -157,7 +156,7 @@ public class Experiment implements DialogueMonitor {
 				}
 				
 				// Test it
-				ScenarioTester test = new ScenarioTester(goal);
+				ScenarioTester test = new ScenarioTester(goal, false);
 				if (testWriter != null) {
 					test.addListener(testWriter);
 				}

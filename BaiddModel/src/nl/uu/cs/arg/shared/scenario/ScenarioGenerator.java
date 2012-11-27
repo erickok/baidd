@@ -69,7 +69,6 @@ public class ScenarioGenerator {
 	private final int n_O_r;
 	private final int n_G_r;
 	private final int l;
-	private final int n_B_nro;
 	private final int n_G_nro;
 	private final int n_B_ra;
 	private final int n_B_nra;
@@ -80,8 +79,9 @@ public class ScenarioGenerator {
 	private List<Rule> kb = new ArrayList<Rule>();
 	private int ruleCounter = 0;
 
-	public ScenarioGenerator(String g_d, int n_A, int n_R, int n_B_s, int n_O_s, int n_G_s, int n_O_r, int n_G_r,
-			int l, int n_B_ro, int n_G_nro, int n_B_ra, int n_B_nra, AssignmentMethod assignment,
+	public ScenarioGenerator(String g_d, int n_A, int n_R, int n_B_s,
+			int n_O_s, int n_G_s, int n_O_r, int n_G_r, int l, int n_G_nro,
+			int n_B_ra, int n_B_nra, AssignmentMethod assignment,
 			AssignmentMethod roleAssignment, ConflictMethod conflictMethod) {
 		this.g_d = g_d;
 		this.n_A = n_A;
@@ -92,7 +92,6 @@ public class ScenarioGenerator {
 		this.n_O_r = n_O_r;
 		this.n_G_r = n_G_r;
 		this.l = l;
-		this.n_B_nro = n_B_ro;
 		this.n_G_nro = n_G_nro;
 		this.n_B_ra = n_B_ra;
 		this.n_B_nra = n_B_nra;
@@ -453,7 +452,7 @@ public class ScenarioGenerator {
 	@Override
 	public String toString() {
 		return g_d + " " + n_A + " " + n_R + " " + n_B_s + " " + n_O_s + " " + n_G_s + " " + n_O_r + " " + n_G_r + " "
-				+ l + " " + n_B_nro + " " + n_G_nro + " " + n_B_ra + " " + n_B_nra + " " + beliefAssignment.name()
+				+ l + " " + n_G_nro + " " + n_B_ra + " " + n_B_nra + " " + beliefAssignment.name()
 				+ " " + roleAssignment.name();
 	}
 }
