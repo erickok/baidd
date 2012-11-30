@@ -177,7 +177,7 @@ public class Experiment implements DialogueMonitor {
 					List<Agent> agents = new ArrayList<Agent>();
 					List<AgentXmlData> agentXml = new ArrayList<AgentXmlData>();
 					for (int i = 0; i < players; i++) {
-						// Create knownledge base object
+						// Create knowledge base object
 						KnowledgeBase kb = new KnowledgeBase();
 						kb.addRules(scenario.get(i).B);
 						// Create option objects for the option terms
@@ -187,6 +187,8 @@ public class Experiment implements DialogueMonitor {
 						}
 						// Create goal objects for the goal constants
 						// This also assigns a utility of 1, ..., n_G_r
+						// TODO: Improve this method
+						// TODO: Don't assign g_d a utility?
 						ArrayList<Goal> goals = new ArrayList<Goal>();
 						int u = 1;
 						for (Constant g : scenario.get(i).G) {

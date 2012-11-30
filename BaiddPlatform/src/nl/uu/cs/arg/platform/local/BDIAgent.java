@@ -75,7 +75,7 @@ public class BDIAgent implements Agent, StrategyExposer {
 	
 	public enum Property {
 		AdoptBeliefs,
-		AdoptOnlyDefensibleBeliefs,
+		//AdoptOnlyDefensibleBeliefs,
 		BaseAttitudeIsBuild,
 		BaseAttitudeIsDestory,
 		OnlyProposeIfArgument,
@@ -94,7 +94,7 @@ public class BDIAgent implements Agent, StrategyExposer {
 		// Set default properties
 		this.properties = new HashMap<Property, Object>();
 		this.properties.put(Property.AdoptBeliefs, Boolean.FALSE);
-		this.properties.put(Property.AdoptOnlyDefensibleBeliefs, Boolean.FALSE);
+		//this.properties.put(Property.AdoptOnlyDefensibleBeliefs, Boolean.FALSE);
 		this.properties.put(Property.BaseAttitudeIsBuild, Boolean.TRUE);
 		this.properties.put(Property.BaseAttitudeIsDestory, Boolean.FALSE);
 		this.properties.put(Property.PlayBuildOrDestroyStrategy, Boolean.TRUE);
@@ -424,8 +424,21 @@ public class BDIAgent implements Agent, StrategyExposer {
 				((DeliberationLocution)move.getLocution()).gatherPublicBeliefs(exposed);
 				for (Constant b : exposed) {
 				
-					// If the belief isn't an option...
-					if (!isBeliefInOptions(b) && !beliefs.ruleExists(new Rule(b))) {
+					if (b instanceof Rule) {
+						// We add rules if it didn't exist yet and it doesn't cause any loops
+						if (!beliefs.ruleExists((Rule)b) && !helper.causesLoop(beliefs, (Rule)b)) {
+							----
+							//beliefs.addRule((Rule)b);
+						}
+					} else {
+						// We add constants and terms directly, if they are not options or the mutual goal
+						if (!dialogue.getTopicGoal().getGoalContent().equals(b) && 
+								!dialogue.getTopic().isUnifiable(b) && !beliefs.ruleExists(new Rule(b))) {
+							beliefs.addRule(new Rule(b));
+						}
+					}
+					
+					/*
 						if ((Boolean)this.properties.get(Property.AdoptOnlyDefensibleBeliefs)) {
 							// ... see if we have an argument for it
 							List<RuleArgument> proofs = helper.findProof(new ConstantList(b), 0.0, this.beliefs, this.optionBeliefs, null);
@@ -441,7 +454,7 @@ public class BDIAgent implements Agent, StrategyExposer {
 								beliefs.addRule(new Rule(b));
 							}
 						}
-					}
+					*/
 			
 				}
 				

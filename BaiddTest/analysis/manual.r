@@ -1,4 +1,4 @@
-source("analysis/load.r")
+source("~/Dev/baidd/BaiddTest/analysis/load.r")
 attach(r1)
 attach(r2)
 attach(r3)

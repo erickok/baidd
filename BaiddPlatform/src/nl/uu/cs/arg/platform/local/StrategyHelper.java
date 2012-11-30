@@ -1,5 +1,6 @@
 package nl.uu.cs.arg.platform.local;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -18,6 +19,7 @@ import org.aspic.inference.Constant;
 import org.aspic.inference.ConstantList;
 import org.aspic.inference.Engine;
 import org.aspic.inference.Engine.Property;
+import org.aspic.inference.Element;
 import org.aspic.inference.KnowledgeBase;
 import org.aspic.inference.Query;
 import org.aspic.inference.Reasoner;
@@ -328,5 +330,48 @@ public class StrategyHelper {
 		return null;
 		
 	}
-	
+
+	/**
+	 * Look whether a new rule would cause a loop when applying rules (which is a way of circular reasoning not
+	 * supported by the AspicInference project)
+	 * @param beliefs The current rule pool
+	 * @param newRule The new rule we are looking to add
+	 * @return True if the new rule would cause a loop, false otherwise
+	 */
+	public boolean causesLoop(KnowledgeBase beliefs, Rule newRule) {
+		List<Rule> applied = new ArrayList<Rule>();
+		List<Rule> newRules = beliefs.getRules();
+		newRules.add(newRule);
+		applied.add(newRule);
+		return causesLoop(newRules, applied, newRule);
+	}
+
+	// Used internally to recursively look for loops in the rules
+	private boolean causesLoop(List<Rule> allRules, List<Rule> applied, Rule testRule) {
+
+		// For each antecedent
+		for (Element a : testRule.getAntecedent()) {
+			// Check if there is a rule that can be applied
+			for (Rule r : allRules) {
+				if (r.getConsequent().isUnifiable(a)) {
+
+					if (applied.contains(r)) {
+						// If we already applied this rule earlier, we have a loop!
+						return true;
+					} else {
+						// Not applied yet: add it to applied and look it it can cause a loop itself
+						applied.add(r);
+						if (causesLoop(allRules, applied, r)) {
+							return true;
+							// If not, continue looking
+						}
+					}
+
+				}
+			}
+		}
+		// None of the rule that we needed to apply caused a loop
+		return false;
+	}
+
 }
