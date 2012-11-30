@@ -74,19 +74,20 @@ public class BDIAgent implements Agent, StrategyExposer {
 	private int skipCount = 0;
 	
 	public enum Property {
+		// Adopting beliefs
 		AdoptBeliefs,
-		//AdoptOnlyDefensibleBeliefs,
-		BaseAttitudeIsBuild,
-		BaseAttitudeIsDestory,
-		OnlyProposeIfArgument,
+		AdoptOnlyBeliefsWithoutCounterargument,
+		// Attitude assignment
+		BuildOnlyMaxUtility,
+		BuildAllPositiveUtility,
+		// Move generation
 		PlayRejects,
 		OnlyRejectIfCounterArgument,
 		OnlyWhyProposeIfCounterArgument,
 		OnlyWhyRejectIfArgument,
 		OnlyWhyIfCounterArgument,
-		MinimumUtilityForBuild, 
 		SkipIfPossibe, 
-		PlayBuildOrDestroyStrategy, 
+		// Disable arguing
 		PlayOnlyRejects
 	}
 	
@@ -94,17 +95,14 @@ public class BDIAgent implements Agent, StrategyExposer {
 		// Set default properties
 		this.properties = new HashMap<Property, Object>();
 		this.properties.put(Property.AdoptBeliefs, Boolean.FALSE);
-		//this.properties.put(Property.AdoptOnlyDefensibleBeliefs, Boolean.FALSE);
-		this.properties.put(Property.BaseAttitudeIsBuild, Boolean.TRUE);
-		this.properties.put(Property.BaseAttitudeIsDestory, Boolean.FALSE);
-		this.properties.put(Property.PlayBuildOrDestroyStrategy, Boolean.TRUE);
-		this.properties.put(Property.OnlyProposeIfArgument, Boolean.FALSE);
+		this.properties.put(Property.AdoptOnlyBeliefsWithoutCounterargument, Boolean.TRUE);
+		this.properties.put(Property.BuildOnlyMaxUtility, Boolean.FALSE);
+		this.properties.put(Property.BuildAllPositiveUtility, Boolean.TRUE);
 		this.properties.put(Property.PlayRejects, Boolean.FALSE);
 		this.properties.put(Property.OnlyRejectIfCounterArgument, Boolean.FALSE);
 		this.properties.put(Property.OnlyWhyProposeIfCounterArgument, Boolean.FALSE);
 		this.properties.put(Property.OnlyWhyRejectIfArgument, Boolean.FALSE);
 		this.properties.put(Property.OnlyWhyIfCounterArgument, Boolean.TRUE);
-		this.properties.put(Property.MinimumUtilityForBuild, 1);
 		this.properties.put(Property.SkipIfPossibe, Boolean.FALSE);
 		this.properties.put(Property.PlayOnlyRejects, Boolean.FALSE);
 	}
@@ -222,9 +220,8 @@ public class BDIAgent implements Agent, StrategyExposer {
 				// Already proposed?
 				boolean existingIsIn = existingProposal.isIn();
 				// Should be attack?
-				boolean playBuildOrDestroyStrategy = (Boolean)this.properties.get(Property.PlayBuildOrDestroyStrategy);
-				if (playBuildOrDestroyStrategy && (option.getStrategy() == Strategy.Build && existingIsIn || 
-						option.getStrategy() == Strategy.Destroy && !existingIsIn)) {
+				if (option.getStrategy() == Strategy.Build && existingIsIn || 
+						option.getStrategy() == Strategy.Destroy && !existingIsIn) {
 					continue;
 				}
 				
@@ -233,9 +230,6 @@ public class BDIAgent implements Agent, StrategyExposer {
 				// Exceptional case that we only play rejects (effectively not arguing!)
 				if ((Boolean)this.properties.get(Property.PlayOnlyRejects)) {
 
-					/*if (!(Boolean) this.properties.get(Property.PlayRejects)) {
-						continue;
-					}*/
 					// Does it already have a reject reply?
 					boolean hasReject = false;
 					for (Move<? extends Locution> reply : existingProposal.getReplies(existingProposal.getProposalMove())) {
@@ -426,36 +420,24 @@ public class BDIAgent implements Agent, StrategyExposer {
 				
 					if (b instanceof Rule) {
 						// We add rules if it didn't exist yet and it doesn't cause any loops
-						if (!beliefs.ruleExists((Rule)b) && !helper.causesLoop(beliefs, (Rule)b)) {
-							----
-							//beliefs.addRule((Rule)b);
-						}
+						/*if (!beliefs.ruleExists((Rule)b) && !helper.causesLoop(beliefs, (Rule)b)) {
+							beliefs.addRule((Rule)b);
+						}*/
 					} else {
 						// We add constants and terms directly, if they are not options or the mutual goal
 						if (!dialogue.getTopicGoal().getGoalContent().equals(b) && 
 								!dialogue.getTopic().isUnifiable(b) && !beliefs.ruleExists(new Rule(b))) {
-							beliefs.addRule(new Rule(b));
+							if ((Boolean)this.properties.get(Property.AdoptOnlyBeliefsWithoutCounterargument)) {
+								List<RuleArgument> proofs = helper.findProof(new ConstantList(b.negation()), 0.0, this.beliefs, this.optionBeliefs, null);
+								if (proofs.size() == 0) {
+									beliefs.addRule(new Rule(b));
+								}
+							} else {
+								beliefs.addRule(new Rule(b));
+							}
 						}
 					}
 					
-					/*
-						if ((Boolean)this.properties.get(Property.AdoptOnlyDefensibleBeliefs)) {
-							// ... see if we have an argument for it
-							List<RuleArgument> proofs = helper.findProof(new ConstantList(b), 0.0, this.beliefs, this.optionBeliefs, null);
-							if (proofs.size() > 0) {
-								// We have an argument for this move belief: add it to our own knowledge
-								beliefs.addRule(new Rule(b));
-							}
-						} else {
-							// ... see if we have no counter argument to it
-							List<RuleArgument> proofs = helper.findProof(new ConstantList(b.negation()), 0.0, this.beliefs, this.optionBeliefs, null);
-							if (proofs.size() == 0) {
-								// We have an argument for this move belief: add it to our own knowledge
-								beliefs.addRule(new Rule(b));
-							}
-						}
-					*/
-			
 				}
 				
 			}
@@ -530,46 +512,30 @@ public class BDIAgent implements Agent, StrategyExposer {
 
 	private void analyseOptions(List<ValuedOption> valuedOptions) {
 		
-		// For each of the options (including existing proposals)
-		ValuedOption maxUtility = null;
-		for (ValuedOption option : valuedOptions) {
+		if ((Boolean)this.properties.get(Property.BuildOnlyMaxUtility)) {
+
+			ValuedOption maxUtility = null;
+			for (ValuedOption option : valuedOptions) {
+				// By default we destroy
+				option.updateStrategy(Strategy.Destroy);
+				// Store which has the highest utility
+				if (maxUtility == null || maxUtility.getUtility() < option.getUtility()) {
+					maxUtility = option;
+				}
+			}
 			
-			// Store which has the highest utility
-			if (maxUtility == null || maxUtility.getUtility() < option.getUtility()) {
-				maxUtility = option;
+			// Assign a build strategy to the option with the highest utility
+			if (maxUtility != null && maxUtility.getUtility() > 0) {
+				maxUtility.updateStrategy(Strategy.Build);
+			}
+			
+		} else if ((Boolean)this.properties.get(Property.BuildAllPositiveUtility)) {
+			
+			for (ValuedOption option : valuedOptions) {
+				// Build if we have a positive utility
+				option.updateStrategy(option.getUtility() > 0? Strategy.Build: Strategy.Destroy);
 			}
 
-			if ((Boolean)this.properties.get(Property.BaseAttitudeIsBuild)) {
-				// In principle we build
-				option.updateStrategy(Strategy.Build);
-			} else if (!(Boolean)this.properties.get(Property.BaseAttitudeIsDestory)) {
-				// In principle we are indifferent
-				option.updateStrategy(Strategy.Indifferent);
-			} else {
-				// In principle we destroy
-				option.updateStrategy(Strategy.Destroy);
-				break;
-			}
-			
-			// If the option is currently a proposal that is 'in', and the utility = 0, try to destroy it
-			if (option.getUtility() < (Integer)this.properties.get(Property.MinimumUtilityForBuild)) {
-				for (Proposal proposal : this.dialogue.getProposals()) {
-					if (proposal.getProposalLocution().getConcreteProposal().equals(option.getOption())) {
-						if (proposal.isIn()) {
-							option.updateStrategy(Strategy.Destroy);
-						}
-						break;
-					}					
-				}
-				// And when not yet proposed, also destroy it
-				option.updateStrategy(Strategy.Destroy);
-			}
-			
-		}
-		
-		// Assign a build strategy to the option with the highest utility
-		if (maxUtility != null && maxUtility.getUtility() >= (Integer)this.properties.get(Property.MinimumUtilityForBuild)) {
-			maxUtility.updateStrategy(Strategy.Build);
 		}
 		
 	}

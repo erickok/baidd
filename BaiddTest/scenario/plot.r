@@ -3,7 +3,7 @@ r <- readcsv("ScenarioExp.csv")
 attach(r)
 
 # Adjust plotFor to pick one of the parameters to plot
-plotFor <- A
+plotFor <- Conflicts
 labelExp <- expression(l)
 oj <- arg/O
 argFiltered <- arg[arg > 0]

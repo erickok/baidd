@@ -147,6 +147,7 @@ l[which(p_oj == max(p_oj))]
 G_nro[which(p_oj == max(p_oj))]
 B_ra[which(p_oj == max(p_oj))]
 B_nra[which(p_oj == max(p_oj))]
+
 # En voor tegenargumenten
 Conflicts2[which(p_coj == max(p_coj))]
 A2[which(p_coj == max(p_coj))]
@@ -160,6 +161,7 @@ l2[which(p_coj == max(p_coj))]
 G_nro2[which(p_coj == max(p_coj))]
 B_ra2[which(p_coj == max(p_coj))]
 B_nra2[which(p_coj == max(p_coj))]
+
 # En voor potential
 Conflicts[which(p_op == max(p_op))]
 A[which(p_op == max(p_op))]
@@ -173,6 +175,7 @@ l[which(p_op == max(p_op))]
 G_nro[which(p_op == max(p_op))]
 B_ra[which(p_op == max(p_op))]
 B_nra[which(p_op == max(p_op))]
+
 # En voor tegenargumenten
 Conflicts3[which(p_cop == max(p_cop))]
 A3[which(p_cop == max(p_cop))]
