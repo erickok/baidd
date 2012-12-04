@@ -35,7 +35,7 @@ readcsv <- function(f) {
 }
 
 #r <- read.table("results.csv", header=TRUE, sep=";", dec=".", fill=TRUE)
-r <- readcsv("ScenarioExp.csv")
+r <- readcsv("results.csv")
 r1 <- readcsv("experiment1/results.csv")
 r2 <- readcsv("experiment2/results.csv")
 r3 <- readcsv("experiment3/results.csv")

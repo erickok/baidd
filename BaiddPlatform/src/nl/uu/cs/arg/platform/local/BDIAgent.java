@@ -88,7 +88,8 @@ public class BDIAgent implements Agent, StrategyExposer {
 		OnlyWhyIfCounterArgument,
 		SkipIfPossibe, 
 		// Disable arguing
-		PlayOnlyRejects
+		PlayOnlyRejects,
+		PlayOnlyPropose
 	}
 	
 	public BDIAgent() {
@@ -104,6 +105,7 @@ public class BDIAgent implements Agent, StrategyExposer {
 		this.properties.put(Property.OnlyWhyRejectIfArgument, Boolean.FALSE);
 		this.properties.put(Property.OnlyWhyIfCounterArgument, Boolean.TRUE);
 		this.properties.put(Property.SkipIfPossibe, Boolean.FALSE);
+		this.properties.put(Property.PlayOnlyPropose, Boolean.FALSE);
 		this.properties.put(Property.PlayOnlyRejects, Boolean.FALSE);
 	}
 
@@ -227,7 +229,10 @@ public class BDIAgent implements Agent, StrategyExposer {
 				
 				// Generate attackers in the dialogue
 
-				// Exceptional case that we only play rejects (effectively not arguing!)
+				// Exceptional cases that we do not argue, but only propose and possible reject
+				if ((Boolean)this.properties.get(Property.PlayOnlyPropose)) {
+					continue;
+				}
 				if ((Boolean)this.properties.get(Property.PlayOnlyRejects)) {
 
 					// Does it already have a reject reply?

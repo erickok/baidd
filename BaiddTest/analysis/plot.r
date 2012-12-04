@@ -1,10 +1,10 @@
-source("~/Dev/baidd/BaiddTest/analysis/load.r")
+source("~/Dev/baidd1/BaiddTest/analysis/load.r")
 r<-readcsv("results.csv")
 attach(r)
 
-property <- PlayOnlyRejects
-xlab1 <- "arguing"
-xlab2 <- "non-arguing"
+property <- BuildOnlyMaxUtility
+xlab1 <- "all positive"
+xlab2 <- "only max"
 
 # Move count
 boxplot(e_move ~ property, names=c(xlab1,xlab2), ylab="count")
@@ -27,15 +27,13 @@ means <- c(mean(e_total.o[property=="false"]),mean(e_total.o[property=="true"]))
 points(means,pch=18,cex=2)
 
 # Pareto
-plot(e_pareto.o ~ PlayOnlyRejects, ylab="pareto")
-
-# Baseline comparison
-boxplot(e_total.avg ~ property, names=c(xlab1,xlab2), ylab="baseline")
-means <- c(mean(e_total.avg[property=="false"]),mean(e_total.avg[property=="true"]))
-points(means,pch=18,cex=2)
+plot(e_pareto.o ~ property, ylab="pareto")
 
 # Baseline comparison
 boxplot(e_total.avg, xlab="baseline", ylab="utility")
 means <- c(mean(e_total.avg))
 points(means,pch=18,cex=2)
+
+boxplot(e_total.o ~ property, names=c(xlab1,xlab2), ylab="utility", boxwex=.4, at=c(0.9,2.1))
+boxplot(e_total.avg, names=c("baseline"), at=c(1.5),add=TRUE)
 
