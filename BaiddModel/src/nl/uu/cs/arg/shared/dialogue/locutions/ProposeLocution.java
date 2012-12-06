@@ -11,7 +11,7 @@ import org.aspic.inference.Constant;
  * @author erickok
  *
  */
-public class ProposeLocution extends DeliberationLocution {
+public class ProposeLocution extends ProposalRelatedLocution {
 
 	private static final String LOCUTION_NAME = "propose";
 

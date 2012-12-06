@@ -9,7 +9,10 @@ import org.aspic.inference.Constant;
  * during the deliberation process of the dialogue. Useful for 
  * method that want to test the locutoin type via instanceof.
  * 
- * It has no additional functionality over {@link Locution}.
+ * Deliberation locutions also need to implement the 
+ * gatherPublicBeliefs method, which can be used to retrieve all
+ * rules, terms and constants that are used in the concrete 
+ * locution type. 
  * 
  * @author erickok
  *

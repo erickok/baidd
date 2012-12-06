@@ -13,7 +13,7 @@ import org.aspic.inference.Constant;
  * @author erickok
  *
  */
-public abstract class SurrenderingLocution extends DeliberationLocution {
+public abstract class SurrenderingLocution extends ProposalRelatedLocution {
 
 	public SurrenderingLocution(String name) {
 		super(name);

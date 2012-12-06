@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <jardesc>
-    <jar path="/var/data/Dev/baidd1/baidd-bundled.jar"/>
+    <jar path="/home/eric/Dev/baidd/baidd-bundled-playinform2.jar"/>
     <options buildIfNeeded="true" compress="true" descriptionLocation="/BaiddPlatform/CreateBundledJar.jardesc" exportErrors="false" exportWarnings="false" includeDirectoryEntries="false" overwrite="false" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
     <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
     <selectedProjects/>

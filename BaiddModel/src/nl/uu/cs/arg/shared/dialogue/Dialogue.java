@@ -1,13 +1,17 @@
 package nl.uu.cs.arg.shared.dialogue;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-import nl.uu.cs.arg.shared.dialogue.locutions.DeliberationLocution;
+import nl.uu.cs.arg.shared.dialogue.locutions.InformLocution;
 import nl.uu.cs.arg.shared.dialogue.locutions.Locution;
+import nl.uu.cs.arg.shared.dialogue.locutions.ProposalRelatedLocution;
 import nl.uu.cs.arg.shared.dialogue.locutions.ProposeLocution;
 import nl.uu.cs.arg.shared.util.IndexedNode;
 
+import org.aspic.inference.Constant;
 import org.aspic.inference.Term;
 
 /**
@@ -50,12 +54,19 @@ public class Dialogue{
 	 * concrete Term (without variables), but also the full tree of moves.
 	 */
 	private List<Proposal> proposals;
+
+	/**
+	 * The list of beliefs (rules, terms and constants) that agents exposed
+	 * using inform(p) style moves.
+	 */
+	private Set<Constant> informedBeliefs;
 	
 	public Dialogue(Term topic, Goal topicGoal) {
 		this.state = DialogueState.Unopened;
 		this.topic = topic;
 		this.topicGoal = topicGoal;
 		this.proposals = new ArrayList<Proposal>();
+		this.informedBeliefs = new HashSet<Constant>();
 	}
 	
 	/**
@@ -110,7 +121,11 @@ public class Dialogue{
 				// A new proposal
 				addProposal((Move<ProposeLocution>) newMove);
 
-			} else if (locution instanceof DeliberationLocution) {
+			} else if (locution instanceof InformLocution) {
+
+				this.informedBeliefs.add(((InformLocution)locution).getBelief());
+
+			} else if (locution instanceof ProposalRelatedLocution) {
 				
 				// Every other deliberation-related move should have a target; based on this target, 
 				// add it to the appropriate proposal (tree)
@@ -142,13 +157,21 @@ public class Dialogue{
 		}
 		this.proposals.add(new Proposal(proposeMove));
 	}
-	
+
 	/**
 	 * Return a list of all previously made proposals
 	 * @return The existing proposals in this dialogue
 	 */
 	public List<Proposal> getProposals() {
 		return this.proposals;
+	}
+
+	/**
+	 * Return a list of all previously exposed beliefs (using inform(p) moves)
+	 * @return The rules, terms and constants that were exposed
+	 */
+	public Set<Constant> getInformedBeliefs() {
+		return this.informedBeliefs;
 	}
 
 	public String prettyPrint() {

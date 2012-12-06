@@ -14,15 +14,12 @@ import nl.uu.cs.arg.shared.Agent;
 public enum LocalAgent {
 
 	InactiveAgent {
-		@Override public Agent createAgent() { return new InactiveAgent(); }
 		@Override public Agent createAgent(AgentXmlData xmlDataFile) { return new InactiveAgent(xmlDataFile); }		
 	},
 	BDIAgent {
-		@Override public Agent createAgent() { return new BDIAgent(); }
 		@Override public Agent createAgent(AgentXmlData xmlDataFile) { return new BDIAgent(xmlDataFile); }	
 	};
 	
-	public abstract Agent createAgent();
 	public abstract Agent createAgent(AgentXmlData xmlDataFile);
 	
 }

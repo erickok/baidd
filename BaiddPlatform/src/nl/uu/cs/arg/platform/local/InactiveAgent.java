@@ -25,9 +25,6 @@ public class InactiveAgent implements Agent {
 	private String name = NAME;
 	private Participant participant;
 	
-	public InactiveAgent() {
-	}
-	
 	/**
 	 * Create the agent from an XML data specification; this inactive agent 
 	 * will only use the provided name and discard all other data

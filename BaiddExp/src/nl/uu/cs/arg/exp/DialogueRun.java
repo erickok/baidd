@@ -45,7 +45,6 @@ public class DialogueRun implements PlatformListener {
 
 	private final int runId;
 	private final int configId;
-	//private final Distribution distribution;
 	private final DialogueMonitor monitor;
 	private final Settings platformSettings;
 	private final int experimentOptionsCount;
@@ -62,7 +61,6 @@ public class DialogueRun implements PlatformListener {
 			int experimentOptionsCount, String agentStrategy, PlatformOutputPrinter dialogueOutputPrinter) {
 		this.runId = runId;
 		this.configId = configId;
-		//this.distribution = distribution;
 		this.monitor = monitor;
 		this.platformSettings = platformSettings;
 		this.experimentOptionsCount = experimentOptionsCount;

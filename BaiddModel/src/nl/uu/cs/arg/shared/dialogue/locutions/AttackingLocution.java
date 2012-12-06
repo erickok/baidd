@@ -9,7 +9,7 @@ package nl.uu.cs.arg.shared.dialogue.locutions;
  * @author erickok
  *
  */
-public abstract class AttackingLocution extends DeliberationLocution {
+public abstract class AttackingLocution extends ProposalRelatedLocution {
 
 	public AttackingLocution(String name) {
 		super(name);

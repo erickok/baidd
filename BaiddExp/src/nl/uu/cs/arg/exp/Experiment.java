@@ -187,8 +187,7 @@ public class Experiment implements DialogueMonitor {
 						}
 						// Create goal objects for the goal constants
 						// This also assigns a utility of 1, ..., n_G_r
-						// TODO: Improve this method
-						// TODO: Don't assign g_d a utility?
+						// TODO?: Improve this method? Don't assign g_d a utility?
 						ArrayList<Goal> goals = new ArrayList<Goal>();
 						int u = 1;
 						for (Constant g : scenario.get(i).G) {
@@ -256,51 +255,6 @@ public class Experiment implements DialogueMonitor {
 		}
 		return bits;
 	}
-
-	/**
-	 * Look whether a new rule would cause a loop when applying rules (which is
-	 * a way of circular reasoning not supported by the AspicInference project)
-	 * @param currentRules The current rule pool
-	 * @param newRule The new rule we are looking to add
-	 * @return True if the new rule would cause a loop, false otherwise
-	 */
-/*	private boolean causesLoop(List<Rule> currentRules, Rule newRule) {
-		List<Rule> applied = new ArrayList<Rule>();
-		List<Rule> newRules = new ArrayList<Rule>(currentRules);
-		newRules.add(newRule);
-		applied.add(newRule);
-		return causesLoop(newRules, applied, newRule);
-	}*/
-
-	// Used internally to recursively look for loops in the rules
-	/*private boolean causesLoop(List<Rule> allRules, List<Rule> applied, Rule testRule) {
-
-		// For each antecedent
-		for (Element a : testRule.getAntecedent()) {
-			// Check if there is a rule that can be applied
-			for (Rule r : allRules) {
-				if (r.getConsequent().isUnifiable(a)) {
-
-					if (applied.contains(r)) {
-						// If we already applied this rule earlier, we have a
-						// loop!
-						return true;
-					} else {
-						// Not applied yet: add it to applied and look it it can
-						// cause a loop itself
-						applied.add(r);
-						if (causesLoop(allRules, applied, r)) {
-							return true;
-							// If not, continue looking
-						}
-					}
-
-				}
-			}
-		}
-		// None of the rule that we needed to apply caused a loop
-		return false;
-	}*/
 
 	@Override
 	public void dialogueTerminated(DialogueStats stats) {
