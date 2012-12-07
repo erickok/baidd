@@ -22,7 +22,7 @@ public class Settings {
 	/*
 	 * The public (human readable) application version number 
 	 */
-	public final static String APPLICATION_VERSION = "0.1";
+	public final static String APPLICATION_VERSION = "0.9";
 
 	/*
 	 * The public (human readable) application name with version number 

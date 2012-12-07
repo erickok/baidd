@@ -109,8 +109,7 @@ public class Experiment implements DialogueMonitor {
 	        
 			for (int runId = 0; runId < runs; runId++) {
 
-				// Generate a dialogue
-				// Current BDIAgent never attacks itself, f.e.
+				// Use the standard settings
 				List<DeliberationRule> deliberationRules = Arrays.asList(//DeliberationRule.AttackOnOwnMove,
 						DeliberationRule.NoRepeatInBranch);
 				List<TerminationRule> terminationRules = Arrays.asList(TerminationRule.NoParticipants,
@@ -125,9 +124,9 @@ public class Experiment implements DialogueMonitor {
 
 				// Generate the scenario
 				final int players = 7;
-				final int optionsCount = 17; // Also used to format the dialogue output only
+				final int optionsCount = 17; // Also used to format the dialogue output
 				ScenarioGenerator gen = new ScenarioGenerator(goal, 
-						players,		// n_A 
+						players,		// n_A
 						8, 				// n_R
 						40, 			// n_B_s
 						optionsCount,	// n_O_s
