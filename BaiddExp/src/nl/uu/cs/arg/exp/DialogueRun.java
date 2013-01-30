@@ -30,6 +30,7 @@ import nl.uu.cs.arg.shared.dialogue.Move;
 import nl.uu.cs.arg.shared.dialogue.OutcomeMessage;
 import nl.uu.cs.arg.shared.dialogue.Proposal;
 import nl.uu.cs.arg.shared.dialogue.locutions.DeliberationLocution;
+import nl.uu.cs.arg.shared.dialogue.locutions.InformLocution;
 import nl.uu.cs.arg.shared.dialogue.locutions.Locution;
 import nl.uu.cs.arg.shared.util.IndexedNode;
 
@@ -55,6 +56,7 @@ public class DialogueRun implements PlatformListener {
 	private Map<Proposal, Boolean> oldProposalStats = new HashMap<Proposal, Boolean>();
 	private DialogueStats stats;
 	private String agentStrategy;
+	private Set<Constant> exposedInformBeliefs = new HashSet<Constant>();
 	private int relevantMoves = 0;
 
 	public DialogueRun(int runId, int configId, DialogueMonitor monitor, Settings platformSettings, 
@@ -164,7 +166,7 @@ public class DialogueRun implements PlatformListener {
 		}
 		
 		stats.e_pareto = new HashMap<Constant, Boolean>();
-		Set<Constant> exposedBeliefs = new HashSet<Constant>();
+		Set<Constant> exposedBeliefs = exposedInformBeliefs; // Note: Inform beliefs are already gathered in onMove()
 		for (Proposal proposal : dialogue.getProposals()) {
 			
 			// Find exposed beliefs (for information concealment metric)
@@ -319,7 +321,13 @@ public class DialogueRun implements PlatformListener {
 			}
 		} catch (DialogueException e) {
 			// Invalid moves were played by some agent: ignore this
-		}		
+		}
+		// Store any exposed beliefs through inform moves (note: other DeliberationLocations are traversed through later)
+		for (Move<? extends Locution> move : moves) {
+			if (move.getLocution() instanceof InformLocution) {
+				((InformLocution)move.getLocution()).gatherPublicBeliefs(exposedInformBeliefs);
+			}
+		}
 	}
 
 }

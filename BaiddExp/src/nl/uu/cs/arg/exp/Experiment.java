@@ -123,6 +123,23 @@ public class Experiment implements DialogueMonitor {
 				}
 
 				// Generate the scenario
+				/*final int players = 2;
+				final int optionsCount = 17; // Also used to format the dialogue output
+				ScenarioGenerator gen = new ScenarioGenerator(goal, 
+						players,		// n_A
+						6, 				// n_R
+						10, 			// n_B_s
+						optionsCount,	// n_O_s
+						12,	 			// n_G_s
+						10,				// n_O_r
+						5,				// n_G_r
+						2,				// l
+						5, 				// n_G_nro
+						35, 			// n_B_ra
+						25,	 			// n_B_nra
+						ScenarioGenerator.AssignmentMethod.Randomly, 
+						ScenarioGenerator.AssignmentMethod.Evenly,
+						ConflictMethod.Chained);*/
 				final int players = 7;
 				final int optionsCount = 17; // Also used to format the dialogue output
 				ScenarioGenerator gen = new ScenarioGenerator(goal, 

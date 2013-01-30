@@ -1,8 +1,8 @@
-source("~/Dev/baidd1/BaiddTest/analysis/load.r")
+source("~/Dev/baidd/BaiddTest/analysis/load.r")
 r<-readcsv("results.csv")
 attach(r)
 
-property <- BuildOnlyMaxUtility
+property <- PlayOnlyRejects
 xlab1 <- "all positive"
 xlab2 <- "only max"
 

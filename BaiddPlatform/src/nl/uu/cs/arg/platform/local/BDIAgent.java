@@ -79,7 +79,9 @@ public class BDIAgent implements Agent, StrategyExposer {
 		AdoptBeliefs,
 		AdoptOnlyBeliefsWithoutCounterargument,
 		// Attitude assignment
+		BuildMaxDestroyMin,
 		BuildOnlyMaxUtility,
+		BuildAllAboveAverage,
 		BuildAllPositiveUtility,
 		// Move generation
 		PlayRejects,
@@ -95,11 +97,13 @@ public class BDIAgent implements Agent, StrategyExposer {
 	}
 	
 	private BDIAgent() {
-		// Set default properties
+		// Set property defaults
 		this.properties = new HashMap<Property, Object>();
 		this.properties.put(Property.AdoptBeliefs, Boolean.FALSE);
 		this.properties.put(Property.AdoptOnlyBeliefsWithoutCounterargument, Boolean.TRUE);
+		this.properties.put(Property.BuildMaxDestroyMin, Boolean.FALSE);
 		this.properties.put(Property.BuildOnlyMaxUtility, Boolean.FALSE);
+		this.properties.put(Property.BuildAllAboveAverage, Boolean.FALSE);
 		this.properties.put(Property.BuildAllPositiveUtility, Boolean.TRUE);
 		this.properties.put(Property.PlayRejects, Boolean.FALSE);
 		this.properties.put(Property.OnlyRejectIfCounterArgument, Boolean.FALSE);
@@ -525,7 +529,30 @@ public class BDIAgent implements Agent, StrategyExposer {
 
 	private void analyseOptions(List<ValuedOption> valuedOptions) {
 		
-		if ((Boolean)this.properties.get(Property.BuildOnlyMaxUtility)) {
+		if ((Boolean)this.properties.get(Property.BuildMaxDestroyMin)) {
+
+			ValuedOption maxUtility = null, minUtility = null;
+			for (ValuedOption option : valuedOptions) {
+				// By default we are indifferent
+				option.updateStrategy(Strategy.Indifferent);
+				// Store which has the highest and lowest utility
+				if (maxUtility == null || maxUtility.getUtility() < option.getUtility()) {
+					maxUtility = option;
+				}
+				if (minUtility == null || minUtility.getUtility() > option.getUtility()) {
+					minUtility = option;
+				}
+			}
+			
+			// Assign a build strategy to the option with the highest and lowest utility
+			if (maxUtility != null && maxUtility.getUtility() > 0) {
+				maxUtility.updateStrategy(Strategy.Build);
+			}
+			if (minUtility != null && minUtility != maxUtility) {
+				minUtility.updateStrategy(Strategy.Destroy);
+			}
+			
+		} else if ((Boolean)this.properties.get(Property.BuildOnlyMaxUtility)) {
 
 			ValuedOption maxUtility = null;
 			for (ValuedOption option : valuedOptions) {
@@ -541,12 +568,25 @@ public class BDIAgent implements Agent, StrategyExposer {
 			if (maxUtility != null && maxUtility.getUtility() > 0) {
 				maxUtility.updateStrategy(Strategy.Build);
 			}
+
+		} else if ((Boolean)this.properties.get(Property.BuildAllAboveAverage)) {
 			
+			int total = 0;
+			for (ValuedOption option : valuedOptions) {
+				total += option.getUtility();
+			}
+			final float average = (float)total / (float)valuedOptions.size();
+			for (ValuedOption option : valuedOptions) {
+				// Build if we have a utility at least as high as the average (and higher than 0)
+				option.updateStrategy(option.getUtility() > 0 && option.getUtility() >= average ? 
+						Strategy.Build: Strategy.Destroy);
+			}
+
 		} else if ((Boolean)this.properties.get(Property.BuildAllPositiveUtility)) {
 			
 			for (ValuedOption option : valuedOptions) {
 				// Build if we have a positive utility
-				option.updateStrategy(option.getUtility() > 0? Strategy.Build: Strategy.Destroy);
+				option.updateStrategy(option.getUtility() > 0 ? Strategy.Build: Strategy.Destroy);
 			}
 
 		}
