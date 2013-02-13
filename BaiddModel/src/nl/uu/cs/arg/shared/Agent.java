@@ -67,7 +67,7 @@ public interface Agent {
 	 * of the message.
 	 * @param messages The messages about the dialogue, with textual information
 	 */
-	public void onDialogueMessagesReceived(List<DialogueMessage> messages);
+	public void onDialogueMessagesReceived(List<? extends DialogueMessage> messages);
 
 	/**
 	 * When some exception occurs in the ongoing dialogue, an agent may be 

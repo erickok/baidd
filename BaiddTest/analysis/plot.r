@@ -2,9 +2,9 @@ source("~/Dev/baidd/BaiddTest/analysis/load.r")
 r<-readcsv("results.csv")
 attach(r)
 
-property <- PlayOnlyRejects
-xlab1 <- "all positive"
-xlab2 <- "only max"
+property <- PlayInformMoves
+xlab1 <- "propose and reject"
+xlab2 <- "propose and inform"
 
 # Move count
 boxplot(e_move ~ property, names=c(xlab1,xlab2), ylab="count")

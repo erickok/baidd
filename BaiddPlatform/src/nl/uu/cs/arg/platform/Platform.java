@@ -69,11 +69,16 @@ public class Platform implements Runnable {
 	 * The active platform settings
 	 */
 	private final Settings settings;
-	
+
 	/**
 	 * The ongoing deliberation dialogue
 	 */
 	private Dialogue dialogue;
+
+	/**
+	 * All (legal) moves that are made by the agents in the dialogue
+	 */
+	private List<Move<? extends Locution>> allMoves;
 
 	/**
 	 * The agents that are connected to the platform
@@ -124,6 +129,7 @@ public class Platform implements Runnable {
 	public void init(Term topic, Goal topicGoal, List<Agent> agents) {
 		
 		this.dialogue = new Dialogue(topic, topicGoal);
+		this.allMoves = new ArrayList<Move<? extends Locution>>();
 		Move.resetMoveCounter();
 		
 		// For each agent, create a participant data structure and initialize it
@@ -359,6 +365,7 @@ public class Platform implements Runnable {
 			skippedTurnsCount = 0;
 			
 			// Update the dialogue with the forwarded moves
+			allMoves.addAll(moves);
 			try {
 				dialogue.update(moves);
 			} catch (DialogueException e) {
@@ -414,7 +421,7 @@ public class Platform implements Runnable {
 	private void determineOutcome() {
 		
 		// Get the dialogue outcome and broadcast this message
-		broadcastMessage(new OutcomeMessage(settings.getOutcomeSelectionRule().determineOutcome(dialogue)), false);
+		broadcastMessage(new OutcomeMessage(settings.getOutcomeSelectionRule().determineOutcome(dialogue, allMoves)), false);
 		
 		// Set the dialogue state to terminated
 		setDialogueState(DialogueState.Terminated);

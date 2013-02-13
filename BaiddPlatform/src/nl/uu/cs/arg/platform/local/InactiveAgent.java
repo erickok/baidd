@@ -68,7 +68,7 @@ public class InactiveAgent implements Agent {
 	}
 
 	@Override
-	public void onDialogueMessagesReceived(List<DialogueMessage> messages) {
+	public void onDialogueMessagesReceived(List<? extends DialogueMessage> messages) {
 		// Do nothing
 	}
 
